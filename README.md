@@ -1,2 +1,2 @@
-# cs353_eventica
+# CS353_eventica
 This is the repository for the term project of CS353 Database Systems course.
