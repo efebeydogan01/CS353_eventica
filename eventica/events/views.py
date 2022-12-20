@@ -2,6 +2,7 @@ from django.shortcuts import render
 import calendar
 from calendar import HTMLCalendar
 from datetime import datetime
+from django.db import connection
 
 """
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
@@ -27,10 +28,24 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
 def home(request):
     # Todo: get city and events from db
 
+    cursor = connection.cursor()
+    cursor.execute("""
+                    SELECT event_id, E.name, date, event_type, V.name
+                    FROM event E JOIN venue V USING (venue_id) 
+                    WHERE E.name LIKE '%@title%' AND event_type=@type AND 
+                    city=@my_city;
+                    """)
+    # fetchall() method returns every row as a tuple: https://pynative.com/python-cursor-fetchall-fetchmany-fetchone-to-read-rows-from-table/
+    events = cursor.fetchall()
+    print(events)
+    venues = []
+    for event in events:
+        cursor.execute(f"select name from venue where venue_id={event[2]}")
+        venues.append(cursor.fetchall()[0][0])
+    print(events)
     return render(request, "events/events.html", {
         "city": "ANKARA",
-        "events": [
-            {"type": "CONCERT", "name": "Kenan Doğulu Concert", "venue": "Harbiye Açıkhava", "date": "01 Dec 22"}],
+        "events": zip(events, venues),
     })
 
 

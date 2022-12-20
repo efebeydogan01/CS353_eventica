@@ -2,14 +2,14 @@
 {% block content %}
     <h2>MY UPCOMING EVENTS</h2>
     <div class="list-group">
-        {% for event in events %}
+        {% for event, venue in events %}
             <a href="#" class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ event.type }}</h5>
-                    <small>{{ event.date }}</small>
+                    <h5 class="mb-1">{{ event.0 }}</h5>
+                    <small>{{ event.3 }}</small>
                 </div>
-                <p class="mb-1">{{ event.name }}</p>
-                <small class="text-muted">{{ event.venue }}</small>
+                <p class="mb-1">{{ event.1 }}</p>
+                <small class="text-muted">{{ venue }}</small>
             </a>
         {% endfor %}
     </div>
