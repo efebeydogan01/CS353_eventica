@@ -32,14 +32,25 @@ def home(request):
                     FROM event E JOIN venue V USING (venue_id) 
                     WHERE E.name LIKE '%%' AND event_type="Concert" AND 
                     city="Ankara";
-                    """) # Todo: get input name, event_type, and user's city
+                    """)  # Todo: get input name, event_type, and user's city
     # fetchall() method returns every row as a tuple: https://pynative.com/python-cursor-fetchall-fetchmany-fetchone-to-read-rows-from-table/
     column_names = [c[0] for c in cursor.description]
     events = [dict(zip(column_names, row)) for row in cursor.fetchall()]
 
     return render(request, "events/events.html", {
-        "city": "ANKARA", # todo: update city
+        "city": "ANKARA",  # todo: update city
         "events": events,
+    })
+
+
+def my_upcoming_events(request):
+    cursor = connection.cursor()
+    cursor.execute("""SELECT * FROM my_upcoming_events""") # todo: add my_upcoming_events view (user_id necessary)
+    column_names = [c[0] for c in cursor.description]
+    events = [dict(zip(column_names, row)) for row in cursor.fetchall()]
+
+    return render(request, "events/my_upcoming_events.html", {
+        "events": my_upcoming_events,
     })
 
 
