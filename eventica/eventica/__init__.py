@@ -47,6 +47,10 @@ try:
     result = cursor.execute("DROP TABLE IF EXISTS user")
     result = cursor.execute("DROP TABLE IF EXISTS venue")
     result = cursor.execute("DROP TABLE IF EXISTS artist")
+    
+    result = cursor.execute("DROP VIEW IF EXISTS event_view")
+    result = cursor.execute("DROP VIEW IF EXISTS my_upcoming_events")
+    result = cursor.execute("DROP VIEW IF EXISTS artist_view")
 
     # create tables in the database
     result = cursor.execute("""
@@ -393,9 +397,7 @@ try:
     print("tags_artist table created successfully")
 
     # USER VIEW FOR EVENTS
-    """
     result = cursor.execute("""
-    """
                             CREATE VIEW event_view(event_id, event_name, description, date,
                             event_type, status, age_limit, total_quota,
                             seating_plan, avg_rating, venue_id, event_city,
@@ -404,9 +406,7 @@ try:
                             status, age_limit, total_quota, seating_plan, avg_rating,
                             venue.venue_id, venue.city, venue.address
                             FROM event JOIN venue USING (venue_id));
-                            )"""
-    """
-    """
+                            """)
 
     # USER VIEW FOR MY UPCOMING EVENTS
     """
@@ -421,10 +421,10 @@ try:
     """
 
     # VIEW TO GET ALL ARTIST'S INFORMATION
-    # result = cursor.execute("""
-    #                        CREATE VIEW artist_view(artist_id, artist_name, artist_image, artist_genre)
-    #                        AS ( SELECT artist_id, name, image, genre FROM artist);
-    #                        """)
+    result = cursor.execute("""
+                            CREATE VIEW artist_view(artist_id, artist_name, artist_image, artist_genre)
+                            AS ( SELECT artist_id, name, image, genre FROM artist);
+                            """)
 
     # TWO EVENTS IN MY UPCOMING EVENTS CANNOT COLLIDE
     # ASSERTION CANNOT BE CREATED 
