@@ -25,6 +25,8 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
 
 
 def home(request):
+    # Todo: get city and events from db
+
     return render(request, "events/events.html", {
         "city": "ANKARA",
         "events": [
@@ -33,4 +35,4 @@ def home(request):
 
 
 def login(request):
-    return render(request, "events/login.html", )
+    return render(request, "login.html", )
