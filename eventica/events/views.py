@@ -20,3 +20,6 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
         "cal": cal,
         "current_year": current_year,
     })
+
+def login(request):
+    return render(request, "events/login.html",)
