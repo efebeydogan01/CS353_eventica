@@ -64,8 +64,13 @@ try:
                             phone_number varchar(15),
                             date_of_birth date,
                             PRIMARY KEY (user_id)) ENGINE=INNODB;""")
-    print("user table created successfully ")
+    print("user table created successfully ") 
 
+    result = cursor.execute("""
+                            insert into user values(
+                                NULL, "Efe Beydogan", "password", "efebeydogan@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y")
+                            );
+                            """)
     result = cursor.execute("""
                             create table friend(
                             user_id1 int not null,
@@ -160,6 +165,12 @@ try:
     print("venue table created successfully")
 
     result = cursor.execute("""
+                            insert into venue values(
+                                NULL, "Bilkent Odeon", "Bilkent Uni", "Ankara", "Bilkent"
+                            );
+                            """)
+
+    result = cursor.execute("""
                             create table event(
                             event_id int not null auto_increment,
                             name varchar(50) not null,
@@ -187,6 +198,13 @@ try:
                             ) ENGINE=INNODB;
                             """)
     print("event table created successfully")
+
+    result = cursor.execute("""
+                            insert into event values(
+                                NULL, "Yalın Concert", "Yalın Şehrinize Geliyor!", STR_TO_DATE("06-25-2023","%m-%d-%Y"), "Concert", "Available", 18,
+                                150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
+                            );
+                            """)
 
     result = cursor.execute("""
                             create table ticket(
@@ -496,5 +514,7 @@ try:
                             WHERE artist.artist_id = NEW.artist_id;
                             end;
                             """)
+
+    
 except Error as e:
     print("Error while connecting to MySQL", e)
