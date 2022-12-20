@@ -26,26 +26,20 @@ def home(request, year=datetime.now().year, month=datetime.now().strftime('%B'))
 
 
 def home(request):
-    # Todo: get city and events from db
-
     cursor = connection.cursor()
     cursor.execute("""
-                    SELECT event_id, E.name, date, event_type, V.name
+                    SELECT event_id, E.name name, date, event_type, V.name venue
                     FROM event E JOIN venue V USING (venue_id) 
-                    WHERE E.name LIKE '%@title%' AND event_type=@type AND 
-                    city=@my_city;
-                    """)
+                    WHERE E.name LIKE '%%' AND event_type="Concert" AND 
+                    city="Ankara";
+                    """) # Todo: get input name, event_type, and user's city
     # fetchall() method returns every row as a tuple: https://pynative.com/python-cursor-fetchall-fetchmany-fetchone-to-read-rows-from-table/
-    events = cursor.fetchall()
-    print(events)
-    venues = []
-    for event in events:
-        cursor.execute(f"select name from venue where venue_id={event[2]}")
-        venues.append(cursor.fetchall()[0][0])
-    print(events)
+    column_names = [c[0] for c in cursor.description]
+    events = [dict(zip(column_names, row)) for row in cursor.fetchall()]
+
     return render(request, "events/events.html", {
-        "city": "ANKARA",
-        "events": zip(events, venues),
+        "city": "ANKARA", # todo: update city
+        "events": events,
     })
 
 
