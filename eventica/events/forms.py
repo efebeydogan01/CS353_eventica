@@ -26,3 +26,14 @@ class SignupForm(forms.Form):
         super().__init__(*args, **kwargs)
         for field in self.fields:
           self.fields[field].widget.attrs.update({'class': "form-group form-control mt-3"})
+
+class EventForm(forms.Form):
+   
+    name = forms.CharField(label='Name')
+    description = forms.CharField(label='Description')
+    date = forms.DateField(label='Date of Event', widget=forms.DateInput(format=('%Y-%m-%d') ,
+        attrs={'class': 'form-control',
+              'placeholder': 'Select the date',
+              'type': 'date'
+              }))
+
