@@ -7,6 +7,7 @@ from events.forms import *
 from django.views import View
 from django.http import HttpResponseRedirect
 from .forms import EventForm
+from django.contrib import messages
 
 def home(request):
     cursor = connection.cursor()
@@ -23,14 +24,17 @@ def home(request):
     if request.method == "POST":
         event_id = request.POST["event"]
         user_id = request.session['user_id']
-        cursor.execute(f"""
-                        INSERT INTO joins values({event_id}, {user_id})
-                        """)
+        try:
+            cursor.execute(f"""
+                            INSERT INTO joins values({event_id}, {user_id})
+                            """)
+        except:
+            messages.info(request, 'You have already joined the event', extra_tags="text-danger")
         # INSERT INTO joins VALUES (@event_id, @user_id);
-    
+
     return render(request, "events/events.html", {
-        "city": request.session['city'],  # todo: update city
-        "name": request.session['name'],  # todo: update city
+        "city": request.session['city'].upper(),
+        "name": request.session['name'],
         "date_of_birth": request.session['date_of_birth'],
         "events": events,
     })
