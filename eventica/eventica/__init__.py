@@ -515,6 +515,19 @@ try:
                             end;
                             """)
 
+    # cannot insert two users with same email
+    result = cursor.execute("""
+                            create trigger email_check
+                            before insert on user
+                            for each row
+                            begin
+                            if exists (select * from user where email = NEW.email) then
+                            signal sqlstate '45000'
+                            SET MESSAGE_TEXT = 'Two users with the same email cannot exist!'; 
+                            end if;
+                            end;
+                            """)
+
     
 except Error as e:
     print("Error while connecting to MySQL", e)
