@@ -38,7 +38,6 @@ def home(request):
     # fetchall() method returns every row as a tuple: https://pynative.com/python-cursor-fetchall-fetchmany-fetchone-to-read-rows-from-table/
     column_names = [c[0] for c in cursor.description]
     events = [dict(zip(column_names, row)) for row in cursor.fetchall()]
-    user_info = request.session['user_info']
     return render(request, "events/events.html", {
         "city": request.session['city'],  # todo: update city
         "name": request.session['name'],  # todo: update city
@@ -99,7 +98,7 @@ class LoginView(View):
             desc = cursor2.fetchall()
             desc = desc[0]
             date_of_birth = desc[0]
-            request.session['date_of_birth'] = date_of_birth
+            request.session['date_of_birth'] = "date_of_birth"
             return redirect('home')
     def get(self, request):
         form = LoginForm()
