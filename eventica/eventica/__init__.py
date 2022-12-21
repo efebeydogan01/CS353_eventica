@@ -188,7 +188,6 @@ try:
                             avg_rating int,
                             CHECK (event_type in ('Concert', 'Sports', 'Gathering', 'Art',
                             'Other')),
-                            CHECK (total_quota = remaining_quota),
                             CHECK (remaining_quota >= 0),
                             FOREIGN KEY (creator_id) REFERENCES user(user_id)
                             ON DELETE CASCADE,
@@ -241,7 +240,7 @@ try:
                             ON DELETE CASCADE,
                             FOREIGN KEY (ticket_id) REFERENCES ticket(ticket_id)
                             ON DELETE CASCADE,
-                            PRIMARY KEY (ticket_id)
+                            PRIMARY KEY (ticket_id) 
                             ) ENGINE=INNODB;
                             """)
     print("in_shopping_cart table created successfully")
@@ -279,7 +278,6 @@ try:
                             create table joins(
                             event_id int not null,
                             user_id int not null,
-                            date_of_join DATE not null,
                             FOREIGN KEY (event_id) REFERENCES event(event_id)
                             ON DELETE CASCADE,
                             FOREIGN KEY (user_id) REFERENCES user(user_id)
