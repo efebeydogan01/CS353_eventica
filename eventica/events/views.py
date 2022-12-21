@@ -5,6 +5,7 @@ from datetime import datetime
 from django.db import connection
 from events.forms import *
 from django.views import View
+from django.http import HttpResponseRedirect
 
 """
 def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
@@ -56,6 +57,19 @@ def my_upcoming_events(request):
         "events": my_upcoming_events,
     })
 
+def create_event(request):
+    cursor = connection.cursor()
+    submitted = False
+    if request.method == "POST":
+        form = EventForm(request.POST)
+        if form.is_valid():
+            cursor.execute(''' ''')
+            return HttpResponseRedirect('/create_event?submitted=True')
+        else: 
+            form = EventForm
+            if 'submitted' in request.GET:
+                submitted = True
+    return render(request, 'events/create_event.html')
 
 class LoginView(View):
     def post(self, request):

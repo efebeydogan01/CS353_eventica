@@ -26,3 +26,17 @@ class SignupForm(forms.Form):
         super().__init__(*args, **kwargs)
         for field in self.fields:
           self.fields[field].widget.attrs.update({'class': "form-group form-control mt-3"})
+
+class EventForm(ModelForm):
+    class Meta:
+        model = Event
+        fields = ( )
+        labels = {
+            'name' : '',
+            'description' : ''
+            'date' : ''
+            'event-type' : ''
+            'status' : ''
+            'age-limit' : ''
+            'total-quota' : ''
+        }
