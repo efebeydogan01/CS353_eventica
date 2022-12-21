@@ -27,16 +27,13 @@ class SignupForm(forms.Form):
         for field in self.fields:
           self.fields[field].widget.attrs.update({'class': "form-group form-control mt-3"})
 
-class EventForm(ModelForm):
-    class Meta:
-        model = Event
-        fields = ( )
-        labels = {
-            'name' : '',
-            'description' : ''
-            'date' : ''
-            'event-type' : ''
-            'status' : ''
-            'age-limit' : ''
-            'total-quota' : ''
-        }
+class EventForm(forms.Form):
+   
+    name = forms.CharField(label='Name')
+    description = forms.CharField(label='Description')
+    date = forms.DateField(label='Date of Event', widget=forms.DateInput(format=('%Y-%m-%d') ,
+        attrs={'class': 'form-control',
+              'placeholder': 'Select the date',
+              'type': 'date'
+              }))
+
