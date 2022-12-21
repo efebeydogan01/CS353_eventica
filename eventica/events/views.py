@@ -7,27 +7,6 @@ from events.forms import *
 from django.views import View
 from django.http import HttpResponseRedirect
 
-"""
-def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
-    month = month.capitalize()
-    # Convert month name to number
-    month_number = list(calendar.month_name).index(month)
-    month_number = int(month_number)
-
-    # create a calender
-    cal = HTMLCalendar().formatmonth(year, month_number)
-    # get current year
-    now = datetime.now()
-    current_year = now.year
-
-    return render(request, "events/home.html", {
-        "month_number": month_number,
-        "cal": cal,
-        "current_year": current_year,
-    })
-"""
-
-
 def home(request):
     cursor = connection.cursor()
     cursor.execute("""
@@ -64,7 +43,7 @@ def create_event(request):
         if form.is_valid():
             cursor.execute(''' ''')
             return HttpResponseRedirect('/create_event?submitted=True')
-        else: 
+        else:
             form = EventForm
             if 'submitted' in request.GET:
                 submitted = True
@@ -112,7 +91,7 @@ class LoginView(View):
             desc = cursor2.fetchall()
             desc = desc[0]
             date_of_birth = desc[0]
-            request.session['date_of_birth'] = "date_of_birth"
+            request.session['date_of_birth'] = str(date_of_birth)
             return redirect('home')
     def get(self, request):
         form = LoginForm()
