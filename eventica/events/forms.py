@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ModelForm
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Email')
@@ -28,12 +29,18 @@ class SignupForm(forms.Form):
           self.fields[field].widget.attrs.update({'class': "form-group form-control mt-3"})
 
 class EventForm(forms.Form):
-   
-    name = forms.CharField(label='Name')
+    EVENT_CHOICES = (
+        ('1', 'Concert'), ('2','Sports'), ('3','Gathering'), ('4','Art'), ('5', 'Other'))
+    name = forms.CharField(label='Name', max_length=200)
     description = forms.CharField(label='Description')
+    event_type = forms.ChoiceField(choices=EVENT_CHOICES)
     date = forms.DateField(label='Date of Event', widget=forms.DateInput(format=('%Y-%m-%d') ,
         attrs={'class': 'form-control',
               'placeholder': 'Select the date',
               'type': 'date'
               }))
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+          self.fields[field].widget.attrs.update({'class': "form-group form-control mt-3"})

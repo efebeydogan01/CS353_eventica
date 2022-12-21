@@ -6,6 +6,7 @@ from django.db import connection
 from events.forms import *
 from django.views import View
 from django.http import HttpResponseRedirect
+from .forms import EventForm
 
 def home(request):
     cursor = connection.cursor()
@@ -36,8 +37,10 @@ def my_upcoming_events(request):
     })
 
 def create_event(request):
-    cursor = connection.cursor()
-    submitted = False
+    context={}
+    context['form'] = EventForm()
+        
+    '''submitted = False
     if request.method == "POST":
         form = EventForm(request.POST)
         if form.is_valid():
@@ -46,8 +49,8 @@ def create_event(request):
         else:
             form = EventForm
             if 'submitted' in request.GET:
-                submitted = True
-    return render(request, 'events/create_event.html')
+                submitted = True'''
+    return render(request, 'events/create_event.html', context)
 
 class LoginView(View):
     def post(self, request):
