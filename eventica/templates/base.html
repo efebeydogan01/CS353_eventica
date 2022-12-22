@@ -14,7 +14,7 @@
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
-                <li{% if message.tags %} class="text-center p-3 h6 list-unstyled text-white  {{ message.tags }}"{% endif %}>{{ message }}</li>
+                <li{% if message.tags %} class="text-center p-3 h6 list-unstyled text-white {{ message.tags }}"{% endif %}>{{ message }}<button class="btn btn-sm btn-danger side-btn" type="button" style="float: right;">x</button></li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -26,4 +26,16 @@
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
 </body>
+<script>
+    // Get all elements with class="close"
+    var closebtns = document.getElementsByClassName("btn btn-sm btn-danger side-btn");
+    var i;
+
+    // Loop through the elements, and hide the parent, when clicked on
+    for (i = 0; i < closebtns.length; i++) {
+        closebtns[i].addEventListener("click", function() {
+            this.parentElement.style.display = 'none';
+        });
+    }
+</script>
 </html>
