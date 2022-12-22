@@ -5,14 +5,37 @@
     <input class="form-control" type="text" placeholder="Title">
     <br>
     <div class="list-group">
-        {% for event in my_upcoming_events %}
-            <a href="#" class="list-group-item list-group-item-action">
+        {% for event in events %}
+            <a class="list-group-item list-group-item-action p-4">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ event.type }}</h5>
-                    <small>{{ event.date }}</small>
+                    <div>
+                        <h6>{{ event.event_type }}</h6>
+                        <h4 class="text-danger">{{ event.name }}</h4>
+                        <p class="mb-0">Description: {{ event.description }}</p>
+                        <small class="text-muted">Location: {{ event.venue }}</small> <br>
+                        <small>City: {{ event.city }}</small> <br>
+                        <small>Age limit: {% if event.age_limit %}{{ event.age_limit }}+{% else %}-{% endif %}</small>
+                        <br>
+                    </div>
+                    <div class="text-end">
+                        <h6>{{ event.date }}</h6> <br>
+                        {% if event.price > 0 and event.event_id not in paid_events %}
+                        <form action='/my-upcoming-events' method='POST'>
+                            {% csrf_token %}
+                            <input type='hidden' name="event" value="{{ event.event_id }}"/>
+                            <button type='submit' class="btn btn-warning">Pay</button>
+                        </form>
+                        {% elif event.price > 0 %}
+                            <button type='submit' class="btn btn-secondary btn-lg" disabled>Paid</button>
+                        {% endif %}
+                        <form action='/my-upcoming-events' method='POST'>
+                            {% csrf_token %}
+                            <input type='hidden' name="event" value="{{ event.event_id }}"/>
+                            <button type='submit' class="btn btn-danger">Cancel</button>
+                        </form>
+                        <small>{% if event.price > 0 %}Price: {{ event.price }} TL {% else %} Free {% endif %}</small>
+                    </div>
                 </div>
-                <p class="mb-1">{{ event.name }}</p>
-                <small class="text-muted">{{ event.venue }}</small>
             </a>
         {% endfor %}
     </div>

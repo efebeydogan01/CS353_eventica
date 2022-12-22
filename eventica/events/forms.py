@@ -40,7 +40,6 @@ class EventForm(forms.Form):
     name = forms.CharField(label='Name', max_length=200)
     description = forms.CharField(label='Description')
     event_type = forms.ChoiceField(choices=EVENT_CHOICES)
-    print(event_type)
     date = forms.CharField(label='Date and Time (ex. 2022-11-18 12:12:00)')
     age_limit = forms.CharField(label='Age Limit')
     total_quota = forms.CharField(label='Total Quota')
@@ -54,7 +53,6 @@ class EventForm(forms.Form):
         venues.append((venue["VENUE_ID"], venue["NAME"]))
     
     VENUE_CHOICES = tuple(venues)
-    print(venues)
     venue = forms.ChoiceField(choices=VENUE_CHOICES, label='Venue')
 
     def __init__(self, *args, **kwargs):

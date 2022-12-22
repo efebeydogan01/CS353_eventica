@@ -20,7 +20,7 @@ def home(request):
         event_id = request.POST["event"]
         user_id = request.session['user_id']
         cursor.execute(f"""
-                        SELECT age_limit, remaining_quota, date
+                        SELECT age_limit, remaining_quota, date, price
                         FROM event E
                         WHERE E.event_id = {event_id}
                         """)
@@ -28,6 +28,7 @@ def home(request):
         age_limit = event_info[0][0]
         remaining_quota = event_info[0][1]
         event_date = str(event_info[0][2])
+        price = int(event_info[0][3])
         birthdate = datetime. strptime(date_of_birth, "%Y-%m-%d")
         today = date.today()
         age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
@@ -48,6 +49,8 @@ def home(request):
         else:
             try:
                 cursor.execute(f"""INSERT INTO joins values({event_id}, {user_id})""")
+                if price == 0:
+                    cursor.execute(f"""INSERT INTO ticket values(NULL, {event_id}, {user_id})""")
                 messages.success(request, 'Successfully joined the event!', extra_tags='bg-success')
             except:
                 messages.error(request, 'You have already joined the event', extra_tags="bg-danger")
@@ -59,7 +62,7 @@ def home(request):
     q_search_title = "%" + search_title + "%"
     q_event_type = "%" + event_type + "%"
     cursor.execute("""
-                    SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, V.name venue
+                    SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, price, V.name venue
                     FROM event E JOIN venue V USING (venue_id) 
                     WHERE city = %s AND E.name LIKE %s AND event_type LIKE %s;
                     """, [city, q_search_title, q_event_type])
@@ -83,7 +86,6 @@ def create_event(request):
             name = str(context['form'].cleaned_data['name'])
             description = str(context['form'].cleaned_data['description'])
             event_type = context['form'].cleaned_data['event_type']
-            print(event_type)
             date = str(context['form'].cleaned_data['date'])
             age_limit = int(context['form'].cleaned_data['age_limit'])
             total_quota = int(context['form'].cleaned_data['total_quota'])

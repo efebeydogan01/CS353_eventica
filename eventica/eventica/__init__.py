@@ -189,6 +189,7 @@ try:
                             venue_id int not null,
                             creator_id int not null,
                             avg_rating int,
+                            price int,
                             CHECK (event_type in ('Concert', 'Sports', 'Gathering', 'Art',
                             'Other')),
                             CHECK (remaining_quota >= 0),
@@ -204,25 +205,25 @@ try:
     result = cursor.execute("""
                             insert into event values(
                                 NULL, "Yalın Concert", "Yalın Şehrinize Geliyor!", "2023-06-25 20:30:00", "Concert", "Available", 18,
-                                150, 150, "A, B, C", 1, 1, 5
+                                150, 150, "A, B, C", 1, 1, 0, 100
                             );
                             """)
     result = cursor.execute("""
                             insert into event values(
                                 NULL, "MVÖ", "mor ve ötesi", "2023-06-25 20:30:00", "Concert", "Available", 18,
-                                150, 150, "A, B, C", 1, 1, 5
+                                150, 150, "A, B, C", 1, 1, 0, 100
                             );
                             """)
     result = cursor.execute("""
                             insert into event values(
                                 NULL, "JABBAR", "cesaretsizce olmuyor", "2023-07-28 12:30:00", "Concert", "Available", 13,
-                                150, 150, "A, B, C", 1, 1, 5
+                                150, 150, "A, B, C", 1, 1, 0, 0
                             );
                             """)
     result = cursor.execute("""
                             insert into event values(
                                 NULL, "Emir Melih Erdem House Gathering", "mantı+sarma ikramımızdır", "2022-12-23 12:30:00", "Gathering", "Available", 13,
-                                15, 15, "A, B, C", 1, 1, 5
+                                15, 15, "A, B, C", 1, 1, 0, 0
                             );
                             """)
 
@@ -230,8 +231,9 @@ try:
                             create table ticket(
                             ticket_id int not null auto_increment,
                             event_id int not null,
-                            ticket_category varchar(50) not null,
+                            user_id int not null,
                             FOREIGN KEY (event_id) REFERENCES event(event_id),
+                            FOREIGN KEY (user_id) REFERENCES user(user_id),
                             PRIMARY KEY (ticket_id)
                             ) ENGINE=INNODB;
                             """)
@@ -541,6 +543,17 @@ try:
                             signal sqlstate '45000'
                             SET MESSAGE_TEXT = 'Two users with the same email cannot exist!'; 
                             end if;
+                            end;
+                            """)
+
+    # when something is deleted from joins, delete it from ticket as well
+    result = cursor.execute("""
+                            create trigger ticket_check
+                            after delete on joins
+                            for each row
+                            begin
+                            DELETE FROM ticket
+                            where user_id = OLD.user_id and event_id = OLD.event_id;
                             end;
                             """)
 

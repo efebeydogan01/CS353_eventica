@@ -53,6 +53,7 @@
                             <input type='hidden' name="event" value="{{ event.event_id }}"/>
                             <button type='submit' class="btn btn-success">Join Event</button>
                         </form>
+                        <small>{% if event.price > 0 %}Price: {{ event.price }} TL {% else %} Free {% endif %}</small>
                     </div>
                 </div>
             </a>
