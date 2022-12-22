@@ -204,6 +204,12 @@ try:
                                 150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
                             );
                             """)
+    result = cursor.execute("""
+                            insert into event values(
+                                NULL, "MVÖ", "mor ve ötesi", "2023-06-25 20:30:00", "Concert", "Available", 18,
+                                150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
+                            );
+                            """)
 
     result = cursor.execute("""
                             create table ticket(
@@ -424,26 +430,11 @@ try:
                             FROM event JOIN venue USING (venue_id));
                             """)
 
-    # USER VIEW FOR MY UPCOMING EVENTS
-    """
-    result = cursor.execute("""
-    """
-                            CREATE VIEW my_upcoming_events AS
-                            SELECT *
-                            FROM event_view
-                            WHERE (event_id, user_id) IN (SELECT * FROM joins);
-                            )"""
-    """
-    """
-
     # VIEW TO GET ALL ARTIST'S INFORMATION
     result = cursor.execute("""
                             CREATE VIEW artist_view(artist_id, artist_name, artist_image, artist_genre)
                             AS ( SELECT artist_id, name, image, genre FROM artist);
                             """)
-
-    # TWO EVENTS IN MY UPCOMING EVENTS CANNOT COLLIDE
-    # ASSERTION CANNOT BE CREATED 
 
     # TRIGGERS
 

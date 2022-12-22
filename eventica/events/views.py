@@ -25,21 +25,31 @@ def home(request):
         event_id = request.POST["event"]
         user_id = request.session['user_id']
         cursor.execute(f"""
-                        SELECT age_limit, remaining_quota
+                        SELECT age_limit, remaining_quota, date
                         FROM event E
                         where E.event_id = {event_id}
                         """)
         event_info = cursor.fetchall()
         age_limit = event_info[0][0]
         remaining_quota = event_info[0][1]
+        event_date = str(event_info[0][2])
         birthdate = datetime. strptime(request.session['date_of_birth'], "%Y-%m-%d")
         today = date.today()
         age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+        print(event_date)
 
+        cursor.execute(f"""
+                        SELECT *
+                        FROM joins natural join event
+                        where user_id = {user_id} AND date = STR_TO_DATE('{event_date}', '%Y-%m-%d %H:%i:%s') AND event_id <> {event_id} 
+                        """)
+        colliding = cursor.fetchall()
         if remaining_quota <= 0:
             messages.error(request, 'There is not enough quota left in the event!', extra_tags="bg-danger")
         elif age < age_limit:
             messages.error(request, 'You are not old enough to attend this event!', extra_tags="bg-danger")
+        elif colliding:
+            messages.error(request, 'This event collides with other event(s) that you are attending!', extra_tags="bg-danger")
         else:
             try:
                 cursor.execute(f"""
