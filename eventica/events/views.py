@@ -10,16 +10,11 @@ from .forms import EventForm
 from django.contrib import messages
 
 def home(request):
+    city = request.session['city'].lower()
+    user_name = request.session['name']
+    date_of_birth = request.session['date_of_birth']
+
     cursor = connection.cursor()
-    cursor.execute("""
-                    SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, V.name venue
-                    FROM event E JOIN venue V USING (venue_id) 
-                    WHERE E.name LIKE '%%' AND event_type="Concert" AND 
-                    city="Ankara";
-                    """)  # Todo: get input name, event_type, and user's city
-    # fetchall() method returns every row as a tuple: https://pynative.com/python-cursor-fetchall-fetchmany-fetchone-to-read-rows-from-table/
-    column_names = [c[0] for c in cursor.description]
-    events = [dict(zip(column_names, row)) for row in cursor.fetchall()]
 
     if request.method == "POST":
         event_id = request.POST["event"]
@@ -27,13 +22,13 @@ def home(request):
         cursor.execute(f"""
                         SELECT age_limit, remaining_quota, date
                         FROM event E
-                        where E.event_id = {event_id}
+                        WHERE E.event_id = {event_id}
                         """)
         event_info = cursor.fetchall()
         age_limit = event_info[0][0]
         remaining_quota = event_info[0][1]
         event_date = str(event_info[0][2])
-        birthdate = datetime. strptime(request.session['date_of_birth'], "%Y-%m-%d")
+        birthdate = datetime. strptime(date_of_birth, "%Y-%m-%d")
         today = date.today()
         age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
         print(event_date)
@@ -52,18 +47,30 @@ def home(request):
             messages.error(request, 'This event collides with other event(s) that you are attending!', extra_tags="bg-danger")
         else:
             try:
-                cursor.execute(f"""
-                                INSERT INTO joins values({event_id}, {user_id})
-                                """)
+                cursor.execute(f"""INSERT INTO joins values({event_id}, {user_id})""")
                 messages.success(request, 'Successfully joined the event!', extra_tags='bg-success')
             except:
                 messages.error(request, 'You have already joined the event', extra_tags="bg-danger")
         return redirect(request.META['HTTP_REFERER'])
 
+    search_title = request.GET["title"] if "title" in request.GET and request.GET["title"] else ''
+    event_type = request.GET["event_type"] if "event_type" in request.GET and request.GET["event_type"] else ''
+
+    q_search_title = "%" + search_title + "%"
+    q_event_type = "%" + event_type + "%"
+    cursor.execute("""
+                    SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, V.name venue
+                    FROM event E JOIN venue V USING (venue_id) 
+                    WHERE city = %s AND E.name LIKE %s AND event_type LIKE %s;
+                    """, [city, q_search_title, q_event_type])
+    events = to_dict(cursor)
+
     return render(request, "events/events.html", {
-        "city": request.session['city'].upper(),
-        "name": request.session['name'],
-        "date_of_birth": request.session['date_of_birth'],
+        "city": city.upper(),
+        "name": user_name,
+        "date_of_birth": date_of_birth,
+        "filter_event_type": event_type.lower(),
+        "filter_title": search_title,
         "events": events,
     })
 
@@ -71,8 +78,7 @@ def home(request):
 def my_upcoming_events(request):
     cursor = connection.cursor()
     cursor.execute("""SELECT * FROM my_upcoming_events""") # todo: add my_upcoming_events view (user_id necessary)
-    column_names = [c[0] for c in cursor.description]
-    events = [dict(zip(column_names, row)) for row in cursor.fetchall()]
+    my_upcoming_events = to_dict(cursor)
     return render(request, "events/my_upcoming_events.html", {
         "events": my_upcoming_events,
     })
@@ -169,3 +175,8 @@ class SignupView(View):
         context = {'form': form}
         return render(request, 'signup.html', context)
 
+
+def to_dict(cursor):
+    column_names = [c[0] for c in cursor.description]
+    data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
+    return data
