@@ -6,7 +6,6 @@ from django.db import connection
 from events.forms import *
 from django.views import View
 from django.http import HttpResponseRedirect
-from .forms import EventForm
 from django.contrib import messages
 
 def home(request):
@@ -71,6 +70,7 @@ def home(request):
         "date_of_birth": date_of_birth,
         "filter_event_type": event_type.lower(),
         "filter_title": search_title,
+        "date_form": DateForm(),
         "events": events,
     })
 

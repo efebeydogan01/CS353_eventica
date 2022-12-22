@@ -1,4 +1,5 @@
 from django import forms
+import datetime
 from django.forms import ModelForm
 from django.db import connection
 
@@ -6,6 +7,7 @@ def to_dict(cursor):
     column_names = [c[0] for c in cursor.description]
     data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
     return data
+
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Email')
@@ -15,6 +17,7 @@ class LoginForm(forms.Form):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': "form-group form-control mt-3"})
+
 
 class SignupForm(forms.Form):
     email = forms.EmailField(label='Email')
@@ -34,25 +37,25 @@ class SignupForm(forms.Form):
         for field in self.fields:
           self.fields[field].widget.attrs.update({'class': "form-group form-control mt-3"})
 
+
 class EventForm(forms.Form):
     EVENT_CHOICES = (
         ('Concert', 'Concert'), ('Sports','Sports'), ('Gathering','Gathering'), ('Art','Art'), ('Other', 'Other'))
     name = forms.CharField(label='Name', max_length=200)
     description = forms.CharField(label='Description')
     event_type = forms.ChoiceField(choices=EVENT_CHOICES)
-    print(event_type)
     date = forms.CharField(label='Date and Time (ex. 2022-11-18 12:12:00)')
     age_limit = forms.CharField(label='Age Limit')
     total_quota = forms.CharField(label='Total Quota')
-    
+
     sql = """SELECT VENUE_ID, NAME FROM VENUE"""
     cursor = connection.cursor()
     cursor.execute(sql)
     result = to_dict(cursor)
     venues = []
-    for venue in result:   
+    for venue in result:
         venues.append((venue["VENUE_ID"], venue["NAME"]))
-    
+
     VENUE_CHOICES = tuple(venues)
     print(venues)
     venue = forms.ChoiceField(choices=VENUE_CHOICES, label='Venue')
@@ -61,4 +64,8 @@ class EventForm(forms.Form):
         super().__init__(*args, **kwargs)
         for field in self.fields:
           self.fields[field].widget.attrs.update({'class': "form-group form-control mt-3"})
+
+
+class DateForm(forms.Form):
+    date = forms.DateField(widget=forms.widgets.DateInput(attrs={'type': 'date'}), label='From:')
 
