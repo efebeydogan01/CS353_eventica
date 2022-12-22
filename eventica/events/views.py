@@ -90,7 +90,7 @@ def create_event(request):
             cursor = connection.cursor()
             sql = """
             insert into event values(NULL, 'name', 'description', 'date',
-            'event_type', "Available", 'age_limit', 'total_quota' 'total_quota', '', 1, 1, '12-20-2022', 5);
+            'event_type', "Available", 'age_limit', 'total_quota' 'total_quota', "", 1, 1, "12-20-2022", 5);
             """.format(name, description, str(date), event_type, age_limit, total_quota, total_quota)
             result = cursor.execute(sql)
     else:
