@@ -181,16 +181,17 @@ class SignupView(View):
         form = SignupForm()
         context = {'form': form}
         return render(request, 'signup.html', context)
+
 def edit_event(request):
     cursor = connection.cursor()
-    event_id = request.session["event_id"]
-    cursor.execute(f"""
+    if request.method=="POST":
+        if context['form'].is_valid():
+            event_id = request.POST["event"]
+            cursor.execute(f"""
                         SELECT *
                         FROM event E
                         WHERE E.event_id = {event_id}
                         """)
-    if request.method=="POST":
-        if context['form'].is_valid():
             name = str(context['form'].cleaned_data['name'])
             description = str(context['form'].cleaned_data['description'])
             event_type = context['form'].cleaned_data['event_type']
@@ -229,8 +230,6 @@ def my_events (request):
     search_title = request.GET["title"] if "title" in request.GET and request.GET["title"] else ''
     event_type = request.GET["event_type"] if "event_type" in request.GET and request.GET["event_type"] else ''
 
-    q_search_title = "%" + search_title + "%"
-    q_event_type = "%" + event_type + "%"
     cursor.execute(f"""
                     SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, V.name venue, E.creator_id creator_id
                     FROM event E JOIN venue V USING (venue_id) 
@@ -246,6 +245,7 @@ def my_events (request):
         "filter_title": search_title,
         "events": events,
     })
+
 def to_dict(cursor):
     column_names = [c[0] for c in cursor.description]
     data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
