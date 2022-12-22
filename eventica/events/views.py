@@ -28,7 +28,7 @@ def home(request):
         remaining_quota = event_info[0][1]
         event_date = str(event_info[0][2])
         price = int(event_info[0][3])
-        birthdate = datetime. strptime(date_of_birth, "%Y-%m-%d")
+        birthdate = datetime.datetime.strptime(date_of_birth, "%Y-%m-%d")
         today = date.today()
         age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
         print(event_date)

@@ -72,6 +72,22 @@ try:
                             );
                             """)
     result = cursor.execute("""
+                            insert into user values(
+                                NULL, "Eren Polat", "1", "erenpolat@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2008","%m-%d-%Y")
+                            );
+                            """)
+    result = cursor.execute("""
+                            insert into user values(
+                                NULL, "Berk Türkçapar", "1", "berk@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y")
+                            );
+                            """)
+    result = cursor.execute("""
+                            insert into user values(
+                                NULL, "Emir M. Erdem", "1", "emir@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y")
+                            );
+                            """)
+
+    result = cursor.execute("""
                             create table friend(
                             user_id1 int not null,
                             user_id2 int not null,
