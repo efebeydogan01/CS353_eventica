@@ -175,7 +175,7 @@ try:
                             event_id int not null auto_increment,
                             name varchar(50) not null,
                             description MEDIUMTEXT not null,
-                            date DATE not null,
+                            date DATETIME not null,
                             event_type varchar(20) not null,
                             status varchar(20),
                             age_limit int,
@@ -201,7 +201,7 @@ try:
     result = cursor.execute("""
                             insert into event values(
                                 NULL, "Yalın Concert", "Yalın Şehrinize Geliyor!", STR_TO_DATE("06-25-2023","%m-%d-%Y"), "Concert", "Available", 18,
-                                150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
+                                150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022 20-00-00","%m-%d-%Y %h-%i-%s"), 5
                             );
                             """)
 
