@@ -183,7 +183,7 @@ class SignupView(View):
         return render(request, 'signup.html', context)
 def edit_event(request):
     cursor = connection.cursor()
-    event_id = request.session["event_id"]
+    event_id = request.POST["event"]
     cursor.execute(f"""
                         SELECT *
                         FROM event E
