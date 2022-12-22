@@ -63,27 +63,28 @@ try:
                             city varchar(30),
                             phone_number varchar(15),
                             date_of_birth date,
+                            balance int,
                             PRIMARY KEY (user_id)) ENGINE=INNODB;""")
     print("user table created successfully ") 
 
     result = cursor.execute("""
                             insert into user values(
-                                NULL, "Efe Beydogan", "password", "efebeydogan@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y")
+                                NULL, "Efe Beydogan", "password", "efebeydogan@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500
                             );
                             """)
     result = cursor.execute("""
                             insert into user values(
-                                NULL, "Eren Polat", "1", "erenpolat@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2008","%m-%d-%Y")
+                                NULL, "Eren Polat", "1", "erenpolat@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2008","%m-%d-%Y"), 500
                             );
                             """)
     result = cursor.execute("""
                             insert into user values(
-                                NULL, "Berk Türkçapar", "1", "berk@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y")
+                                NULL, "Berk Türkçapar", "1", "berk@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500
                             );
                             """)
     result = cursor.execute("""
                             insert into user values(
-                                NULL, "Emir M. Erdem", "1", "emir@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y")
+                                NULL, "Emir M. Erdem", "1", "emir@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500
                             );
                             """)
 
