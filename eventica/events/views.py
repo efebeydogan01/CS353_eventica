@@ -188,40 +188,50 @@ class SignupView(View):
         
 
 def edit_event(request):
-    cursor = connection.cursor()
+    event_id = 2
+    
+    context={}
+    context['form'] = EventForm()
     if request.method=="POST":
         if context['form'].is_valid():
-            event_id = request.POST["event"]
-            cursor.execute(f"""
-                        SELECT *
-                        FROM event E
-                        WHERE E.event_id = {event_id}
-                        """)
+            print("IF E GIRDI")
             name = str(context['form'].cleaned_data['name'])
             description = str(context['form'].cleaned_data['description'])
             event_type = context['form'].cleaned_data['event_type']
-            print(event_type)
             date = str(context['form'].cleaned_data['date'])
             age_limit = int(context['form'].cleaned_data['age_limit'])
             total_quota = int(context['form'].cleaned_data['total_quota'])
             venue = context['form'].cleaned_data['venue']
             user_id = int(request.session['user_id'])
-            cursor = connection.cursor()
             cursor.execute(f"""
-                update event SET event_id = NULL, name = %s, description = %s, date = %s, event_type %s, 
-                status = "Available", age_limit = {age_limit}, total_quota = {total_quota}, remaining_quota = {total_quota}, 
-                seating_plan = "", venue_id = {venue[0]}, creator_id = {user_id}, avg_rating = 0);
+                update event SET name = %s, description = %s, date = %s, event_type %s, 
+                age_limit = {age_limit}, total_quota = {total_quota}, price = {price},
+                venue_id = {venue[0]} where event_id = {event_id});
                 """, [name, description, date, event_type])
             messages.success(request, 'Successfully edited the event!', extra_tags='bg-success')
             context['form'] = EventForm()
         else:
-            context={}
-            context['form'] = EventForm()
+            print("BURDA")
+            event_id = request.POST["event"]
+            cursor = connection.cursor()
+            cursor.execute("""
+                                SELECT *
+                                FROM event E
+                                WHERE E.event_id = %d
+                                """,[int(event_id)])
+            event = to_dict(cursor)
+            name = event[0]['name']
+            description = event[0]['description']
+            event_type =  event[0]['event_type']
+            date =  event[0]['date']
+            age_limit =  event[0]['age_limit']
+            total_quota =  event[0]['total_quota']
+            venue =  event[0]['venue_id']
+            price = event[0]['price']
+            context['form'] = EventForm(initial={'name':name, 'description':description, 'event_type':event_type, 'date':date, 'age_limit':age_limit,  
+                                                                            'total_quota':total_quota, 'venue_id':venue, 'price':price})
             if 'submitted' in request.GET:
                 submitted = True 
-    else:
-        context={}
-        context['form'] = EventForm()
     return render(request, 'events/edit_event.html', context)
     
     
@@ -238,7 +248,7 @@ def my_events (request):
     cursor.execute(f"""
                     SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, V.name venue, E.creator_id creator_id
                     FROM event E JOIN venue V USING (venue_id) 
-                    WHERE creator_id = {user_id} ;
+                    WHERE creator_id = {user_id}
                     """)
     events = to_dict(cursor)
 
