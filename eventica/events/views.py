@@ -12,7 +12,7 @@ from django.contrib import messages
 def home(request):
     cursor = connection.cursor()
     cursor.execute("""
-                    SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, V.name venue
+                    SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, V.name venue
                     FROM event E JOIN venue V USING (venue_id) 
                     WHERE E.name LIKE '%%' AND event_type="Concert" AND 
                     city="Ankara";
@@ -58,6 +58,7 @@ def home(request):
                 messages.success(request, 'Successfully joined the event!', extra_tags='bg-success')
             except:
                 messages.error(request, 'You have already joined the event', extra_tags="bg-danger")
+        return redirect(request.META['HTTP_REFERER'])
 
     return render(request, "events/events.html", {
         "city": request.session['city'].upper(),
