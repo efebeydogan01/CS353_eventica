@@ -34,11 +34,9 @@ class EventForm(forms.Form):
     name = forms.CharField(label='Name', max_length=200)
     description = forms.CharField(label='Description')
     event_type = forms.ChoiceField(choices=EVENT_CHOICES)
-    date = forms.DateField(label='Date of Event', widget=forms.DateInput(format=('%Y-%m-%d') ,
-        attrs={'class': 'form-control',
-              'placeholder': 'Select the date',
-              'type': 'date'
-              }))
+    date = forms.DateTimeField(input_formats=['%d/%m/%Y %H:%M:%S'], widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'), label='Date and Time (ex. 18/11/2022 12:12:00)')
+    age_limit = forms.CharField(label='Age Limit')
+    total_quota = forms.CharField(label='Total Quota')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
