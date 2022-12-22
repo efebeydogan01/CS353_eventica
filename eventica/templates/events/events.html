@@ -1,36 +1,60 @@
 {% extends "../base.html" %}
 {% block content %}
-    <h2>NEARBY EVENTS IN {{ city }}</h2>
-    <h2>Welcome back {{ name }}</h2>
+    <h2 class="text-danger fw-bold">NEARBY EVENTS IN {{ city }}</h2>
+    <div class="text-muted">Welcome back {{ name }}</div>
     <br>
-    <div class="d-flex gx-2">
-        <input class="form-control me-2" type="text" placeholder="Title">
-        <button class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Type
+    <form action='/home' method='GET' class="d-flex gx-2">
+        <input class="form-control me-2" type="text submit" name="title" placeholder="Title">
+        <button class="btn btn-outline-secondary dropdown-toggle me-2" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">Type
         </button>
         <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Concert</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <li>
+                <button type='submit' class="dropdown-item" name="event_type" value="Concert">Concert</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="event_type" value="Sports">Sports</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="event_type" value="Gathering">Gathering</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="event_type" value="Art">Art</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="event_type" value="Other">Other</button>
+            </li>
         </ul>
+        <button type='submit' class="btn btn-secondary">Search</button>
+    </form>
+    <div class="p-2 text-muted text-sm">
+        {% if filter_event_type or filter_title %}
+            Showing {{ filter_event_type }} events {% if filter_title %}that contain "{{ filter_title }}"{% endif %}
+        {% endif %}
     </div>
-    <br>
+
     <div class="list-group">
         {% for event in events %}
-            <a href="#" class="list-group-item list-group-item-action">
+            <a class="list-group-item list-group-item-action p-4">
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ event.event_type }}</h5>
-                    <small>{{ event.date }}</small>
+                    <div>
+                        <h6>{{ event.event_type }}</h6>
+                        <h4 class="text-danger">{{ event.name }}</h4>
+                        <p class="mb-0">Description: {{ event.description }}</p>
+                        <small class="text-muted">Location: {{ event.venue }}</small> <br>
+                        <small>Age limit: {% if event.age_limit %}{{ event.age_limit }}+{% else %}-{% endif %}</small>
+                        <br>
+                        <small>Remaining quota: {{ event.remaining_quota }} / {{ event.total_quota }}</small>
+                    </div>
+                    <div class="text-end">
+                        <h6>{{ event.date }}</h6> <br>
+                        <form action='/home' method='POST'>
+                            {% csrf_token %}
+                            <input type='hidden' name="event" value="{{ event.event_id }}"/>
+                            <button type='submit' class="btn btn-success">Join Event</button>
+                        </form>
+                    </div>
                 </div>
-                <p class="mb-1">{{ event.name }}</p>
-                <small class="text-muted">Location: {{ event.venue }}</small> <br>
-                <small>Age limit: {{ event.age_limit }}+</small> <br>
-                <small>Remaining quota: {{ event.remaining_quota }} / {{ event.total_quota }}</small>
-                <form action='/home' method='POST'>
-                    {% csrf_token %}
-                    <input type='hidden' name="event" value="{{ event.event_id }}"/>
-                    <button type='submit' class="btn btn-success">Join Event</button>
-                </form>
             </a>
         {% endfor %}
     </div>
