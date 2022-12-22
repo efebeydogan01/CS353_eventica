@@ -37,6 +37,7 @@ class EventForm(forms.Form):
     date = forms.DateTimeField(input_formats=['%d/%m/%Y %H:%M:%S'], widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'), label='Date and Time (ex. 18/11/2022 12:12:00)')
     age_limit = forms.CharField(label='Age Limit')
     total_quota = forms.CharField(label='Total Quota')
+    location = forms.CharField(label='Location')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

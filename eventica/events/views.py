@@ -67,19 +67,29 @@ def my_upcoming_events(request):
     })
 
 def create_event(request):
-    context={}
-    context['form'] = EventForm()
-        
-    '''submitted = False
-    if request.method == "POST":
-        form = EventForm(request.POST)
-        if form.is_valid():
-            cursor.execute(''' ''')
-            return HttpResponseRedirect('/create_event?submitted=True')
-        else:
-            form = EventForm
-            if 'submitted' in request.GET:
-                submitted = True'''
+    
+    if request.method=="POST":
+        context={}
+        context['form'] = EventForm(request.POST)
+        if context['form'].is_valid():
+            name = context['form'].cleaned_data['name']
+            description = context['form'].cleaned_data['description']
+            event_type = context['form'].cleaned_data['event_type']
+            date = context['form'].cleaned_data['date']
+            age_limit = context['form'].cleaned_data['age_limit']
+            total_quota = context['form'].cleaned_data['total_quota']
+            location = context['form'].cleaned_data['location']
+            cursor = connection.cursor()
+            sql = """
+            insert into event values(NULL, 'name', 'description', 'date',
+            'event_type', "Available", 'age_limit', 'total_quota' 'total_quota', '', 1, 1, '12-20-2022', 5);
+            """.format(name, description, str(date), event_type, age_limit, total_quota, total_quota)
+            result = cursor.execute(sql)
+    else:
+        context={}
+        context['form'] = EventForm()
+        if 'submitted' in request.GET:
+            submitted = True
     return render(request, 'events/create_event.html', context)
 
 class LoginView(View):
