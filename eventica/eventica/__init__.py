@@ -200,8 +200,8 @@ try:
 
     result = cursor.execute("""
                             insert into event values(
-                                NULL, "Yalın Concert", "Yalın Şehrinize Geliyor!", STR_TO_DATE("06-25-2023","%m-%d-%Y"), "Concert", "Available", 18,
-                                150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022 20-00-00","%m-%d-%Y %h-%i-%s"), 5
+                                NULL, "Yalın Concert", "Yalın Şehrinize Geliyor!", "2023-06-25 20:30:00", "Concert", "Available", 18,
+                                150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
                             );
                             """)
 
