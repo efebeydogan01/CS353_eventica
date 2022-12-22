@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'events',
+    'my_upcoming_events',
 ]
 
 MIDDLEWARE = [
