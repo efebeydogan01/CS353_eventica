@@ -216,6 +216,12 @@ try:
                                 150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
                             );
                             """)
+    result = cursor.execute("""
+                            insert into event values(
+                                NULL, "Emir Melih Erdem House Gathering", "mantı+sarma ikramımızdır", "2022-12-23 12:30:00", "Gathering", "Available", 13,
+                                15, 15, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
+                            );
+                            """)
 
     result = cursor.execute("""
                             create table ticket(
