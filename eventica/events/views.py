@@ -87,12 +87,12 @@ def create_event(request):
             date = str(context['form'].cleaned_data['date'])
             age_limit = int(context['form'].cleaned_data['age_limit'])
             total_quota = int(context['form'].cleaned_data['total_quota'])
-            location = context['form'].cleaned_data['location']
+            venue = context['form'].cleaned_data['venue']
             user_id = int(request.session['user_id'])
             cursor = connection.cursor()
             cursor.execute(f"""
             insert into event values(NULL, %s, %s, %s, %s, 
-            "Available", {age_limit}, {total_quota}, {total_quota}, "", 1, {user_id}, 0);
+            "Available", {age_limit}, {total_quota}, {total_quota}, "", {venue[0]}, {user_id}, 0);
             """, [name, description, date, event_type])
         messages.success(request, 'Successfully created the event!', extra_tags='bg-success')
         context['form'] = EventForm()

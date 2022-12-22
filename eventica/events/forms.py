@@ -1,5 +1,11 @@
 from django import forms
 from django.forms import ModelForm
+from django.db import connection
+
+def to_dict(cursor):
+    column_names = [c[0] for c in cursor.description]
+    data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
+    return data
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Email')
@@ -38,9 +44,21 @@ class EventForm(forms.Form):
     date = forms.CharField(label='Date and Time (ex. 2022-11-18 12:12:00)')
     age_limit = forms.CharField(label='Age Limit')
     total_quota = forms.CharField(label='Total Quota')
-    location = forms.CharField(label='Location')
+    
+    sql = """SELECT VENUE_ID, NAME FROM VENUE"""
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    result = to_dict(cursor)
+    venues = []
+    for venue in result:   
+        venues.append((venue["VENUE_ID"], venue["NAME"]))
+    
+    VENUE_CHOICES = tuple(venues)
+    print(venues)
+    venue = forms.ChoiceField(choices=VENUE_CHOICES, label='Venue')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:
           self.fields[field].widget.attrs.update({'class': "form-group form-control mt-3"})
+

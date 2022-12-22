@@ -169,7 +169,11 @@ try:
                                 NULL, "Bilkent Odeon", "Bilkent Uni", "Ankara", "Bilkent"
                             );
                             """)
-
+    result = cursor.execute("""
+                            insert into venue values(
+                                NULL, "CSO", "Cankaya", "Ankara", "Cankaya"
+                            );
+                            """)
     result = cursor.execute("""
                             create table event(
                             event_id int not null auto_increment,
