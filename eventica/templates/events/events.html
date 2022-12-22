@@ -23,8 +23,9 @@
                     <small>{{ event.date }}</small>
                 </div>
                 <p class="mb-1">{{ event.name }}</p>
-                <small class="text-muted">{{ event.venue }}</small> <br>
-                <small>Remaining quota: {{ event.remaining_quota }}</small>
+                <small class="text-muted">Location: {{ event.venue }}</small> <br>
+                <small>Age limit: {{ event.age_limit }}+</small> <br>
+                <small>Remaining quota: {{ event.remaining_quota }} / {{ event.total_quota }}</small>
                 <form action='/home' method='POST'>
                     {% csrf_token %}
                     <input type='hidden' name="event" value="{{ event.event_id }}"/>

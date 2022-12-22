@@ -459,6 +459,18 @@ try:
                             end;
                             """)
 
+    # update remaining quota after delete on joins
+    result = cursor.execute("""
+                            create trigger ticket_count_update_delete
+                            after delete on joins
+                            for each row  
+                            begin
+                            UPDATE event
+                            SET event.remaining_quota = event.remaining_quota + 1
+                            WHERE event.event_id = OLD.event_id;
+                            end;
+                            """)
+
     # update average rating after new rating is added
     result = cursor.execute("""
                             create trigger new_rating

@@ -14,7 +14,7 @@
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
-                <li{% if message.tags %} class="text-center bg-danger p-3 h6 list-unstyled text-white  {{ message.tags }}"{% endif %}>{{ message }}</li>
+                <li{% if message.tags %} class="text-center p-3 h6 list-unstyled text-white  {{ message.tags }}"{% endif %}>{{ message }}</li>
             {% endfor %}
         </ul>
     {% endif %}

@@ -12,7 +12,7 @@ from django.contrib import messages
 def home(request):
     cursor = connection.cursor()
     cursor.execute("""
-                    SELECT event_id, E.name name, date, event_type, remaining_quota, V.name venue
+                    SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, V.name venue
                     FROM event E JOIN venue V USING (venue_id) 
                     WHERE E.name LIKE '%%' AND event_type="Concert" AND 
                     city="Ankara";
@@ -37,16 +37,17 @@ def home(request):
         age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
 
         if remaining_quota <= 0:
-            messages.error(request, 'There is not enough quota left in the event!', extra_tags="text-danger")
+            messages.error(request, 'There is not enough quota left in the event!', extra_tags="bg-danger")
         elif age < age_limit:
-            messages.error(request, 'You are not old enough to attend this event!', extra_tags="text-danger")
+            messages.error(request, 'You are not old enough to attend this event!', extra_tags="bg-danger")
         else:
             try:
                 cursor.execute(f"""
                                 INSERT INTO joins values({event_id}, {user_id})
                                 """)
+                messages.success(request, 'Successfully joined the event!', extra_tags='bg-success')
             except:
-                messages.error(request, 'You have already joined the event', extra_tags="text-danger")
+                messages.error(request, 'You have already joined the event', extra_tags="bg-danger")
 
     return render(request, "events/events.html", {
         "city": request.session['city'].upper(),
