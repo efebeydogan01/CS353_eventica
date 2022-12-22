@@ -10,3 +10,8 @@ def my_upcoming_events(request):
     return render(request, "my_upcoming_events.html", {
         "events": my_upcoming_events,
     })
+
+def to_dict(cursor):
+    column_names = [c[0] for c in cursor.description]
+    data = [dict(zip(column_names, row)) for row in cursor.fetchall()]
+    return data

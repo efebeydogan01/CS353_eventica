@@ -30,11 +30,12 @@ class SignupForm(forms.Form):
 
 class EventForm(forms.Form):
     EVENT_CHOICES = (
-        ('1', 'Concert'), ('2','Sports'), ('3','Gathering'), ('4','Art'), ('5', 'Other'))
+        ('Concert', 'Concert'), ('Sports','Sports'), ('Gathering','Gathering'), ('Art','Art'), ('Other', 'Other'))
     name = forms.CharField(label='Name', max_length=200)
     description = forms.CharField(label='Description')
     event_type = forms.ChoiceField(choices=EVENT_CHOICES)
-    date = forms.DateTimeField(input_formats=['%d/%m/%Y %H:%M:%S'], widget=forms.DateTimeInput(format='%d/%m/%Y %H:%M:%S'), label='Date and Time (ex. 18/11/2022 12:12:00)')
+    print(event_type)
+    date = forms.CharField(label='Date and Time (ex. 2022-11-18 12:12:00)')
     age_limit = forms.CharField(label='Age Limit')
     total_quota = forms.CharField(label='Total Quota')
     location = forms.CharField(label='Location')

@@ -80,26 +80,29 @@ def create_event(request):
         context={}
         context['form'] = EventForm(request.POST)
         if context['form'].is_valid():
-            name = context['form'].cleaned_data['name']
-            description = context['form'].cleaned_data['description']
+            name = str(context['form'].cleaned_data['name'])
+            description = str(context['form'].cleaned_data['description'])
             event_type = context['form'].cleaned_data['event_type']
-            date = context['form'].cleaned_data['date']
-            age_limit = context['form'].cleaned_data['age_limit']
-            total_quota = context['form'].cleaned_data['total_quota']
+            print(event_type)
+            date = str(context['form'].cleaned_data['date'])
+            age_limit = int(context['form'].cleaned_data['age_limit'])
+            total_quota = int(context['form'].cleaned_data['total_quota'])
             location = context['form'].cleaned_data['location']
+            user_id = int(request.session['user_id'])
             cursor = connection.cursor()
-            sql = """
-            insert into event values(NULL, 'name', 'description', 'date',
-            'event_type', "Available", 'age_limit', 'total_quota' 'total_quota', "", 1, 1, "12-20-2022", 5);
-            """.format(name, description, str(date), event_type, age_limit, total_quota, total_quota)
-            result = cursor.execute(sql)
+            cursor.execute(f"""
+            insert into event values(NULL, %s, %s, %s, %s, 
+            "Available", {age_limit}, {total_quota}, {total_quota}, "", 1, {user_id}, 0);
+            """, [name, description, date, event_type])
+        messages.success(request, 'Successfully created the event!', extra_tags='bg-success')
+        context['form'] = EventForm()
     else:
         context={}
         context['form'] = EventForm()
         if 'submitted' in request.GET:
             submitted = True
     return render(request, 'events/create_event.html', context)
-
+ 
 class LoginView(View):
     def post(self, request):
         form = LoginForm(request.POST)

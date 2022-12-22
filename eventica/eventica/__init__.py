@@ -184,7 +184,6 @@ try:
                             seating_plan varchar(100),
                             venue_id int not null,
                             creator_id int not null,
-                            date_of_creation DATE not null,
                             avg_rating int,
                             CHECK (event_type in ('Concert', 'Sports', 'Gathering', 'Art',
                             'Other')),
@@ -201,25 +200,25 @@ try:
     result = cursor.execute("""
                             insert into event values(
                                 NULL, "Yalın Concert", "Yalın Şehrinize Geliyor!", "2023-06-25 20:30:00", "Concert", "Available", 18,
-                                150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
+                                150, 150, "A, B, C", 1, 1, 5
                             );
                             """)
     result = cursor.execute("""
                             insert into event values(
                                 NULL, "MVÖ", "mor ve ötesi", "2023-06-25 20:30:00", "Concert", "Available", 18,
-                                150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
+                                150, 150, "A, B, C", 1, 1, 5
                             );
                             """)
     result = cursor.execute("""
                             insert into event values(
                                 NULL, "JABBAR", "cesaretsizce olmuyor", "2023-07-28 12:30:00", "Concert", "Available", 13,
-                                150, 150, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
+                                150, 150, "A, B, C", 1, 1, 5
                             );
                             """)
     result = cursor.execute("""
                             insert into event values(
                                 NULL, "Emir Melih Erdem House Gathering", "mantı+sarma ikramımızdır", "2022-12-23 12:30:00", "Gathering", "Available", 13,
-                                15, 15, "A, B, C", 1, 1, STR_TO_DATE("12-20-2022","%m-%d-%Y"), 5
+                                15, 15, "A, B, C", 1, 1, 5
                             );
                             """)
 
