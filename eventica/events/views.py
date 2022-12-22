@@ -91,10 +91,11 @@ def create_event(request):
             total_quota = int(context['form'].cleaned_data['total_quota'])
             venue = context['form'].cleaned_data['venue']
             user_id = int(request.session['user_id'])
+            price = context['form'].cleaned_data['price']
             cursor = connection.cursor()
             cursor.execute(f"""
             insert into event values(NULL, %s, %s, %s, %s, 
-            "Available", {age_limit}, {total_quota}, {total_quota}, "", {venue[0]}, {user_id}, 0);
+            "Available", {age_limit}, {total_quota}, {total_quota}, "", {venue[0]}, {user_id}, 0, {price});
             """, [name, description, date, event_type])
         messages.success(request, 'Successfully created the event!', extra_tags='bg-success')
         context['form'] = EventForm()
@@ -180,8 +181,71 @@ class SignupView(View):
         form = SignupForm()
         context = {'form': form}
         return render(request, 'signup.html', context)
+def edit_event(request):
+    cursor = connection.cursor()
+    event_id = request.session["event_id"]
+    cursor.execute(f"""
+                        SELECT *
+                        FROM event E
+                        WHERE E.event_id = {event_id}
+                        """)
+    if request.method=="POST":
+        if context['form'].is_valid():
+            name = str(context['form'].cleaned_data['name'])
+            description = str(context['form'].cleaned_data['description'])
+            event_type = context['form'].cleaned_data['event_type']
+            print(event_type)
+            date = str(context['form'].cleaned_data['date'])
+            age_limit = int(context['form'].cleaned_data['age_limit'])
+            total_quota = int(context['form'].cleaned_data['total_quota'])
+            venue = context['form'].cleaned_data['venue']
+            user_id = int(request.session['user_id'])
+            cursor = connection.cursor()
+            cursor.execute(f"""
+                update event SET event_id = NULL, name = %s, description = %s, date = %s, event_type %s, 
+                status = "Available", age_limit = {age_limit}, total_quota = {total_quota}, remaining_quota = {total_quota}, 
+                seating_plan = "", venue_id = {venue[0]}, creator_id = {user_id}, avg_rating = 0);
+                """, [name, description, date, event_type])
+            messages.success(request, 'Successfully edited the event!', extra_tags='bg-success')
+            context['form'] = EventForm()
+        else:
+            context={}
+            context['form'] = EventForm()
+            if 'submitted' in request.GET:
+                submitted = True 
+    else:
+        context={}
+        context['form'] = EventForm()
+    return render(request, 'events/edit_event.html', context)
+    
+    
+    
+def my_events (request):
+    city = request.session['city'].lower()
+    user_name = request.session['name']
+    date_of_birth = request.session['date_of_birth']
+    user_id = request.session['user_id']
+    cursor = connection.cursor()
+    search_title = request.GET["title"] if "title" in request.GET and request.GET["title"] else ''
+    event_type = request.GET["event_type"] if "event_type" in request.GET and request.GET["event_type"] else ''
 
+    q_search_title = "%" + search_title + "%"
+    q_event_type = "%" + event_type + "%"
+    cursor.execute(f"""
+                    SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, V.name venue, E.creator_id creator_id
+                    FROM event E JOIN venue V USING (venue_id) 
+                    WHERE creator_id = {user_id} ;
+                    """)
+    events = to_dict(cursor)
 
+    return render(request, "events/my_events.html", {
+        "city": city.upper(),
+        "name": user_name,
+        "date_of_birth": date_of_birth,
+        "filter_event_type": event_type.lower(),
+        "filter_title": search_title,
+        "events": events,
+    })
 def to_dict(cursor):
     column_names = [c[0] for c in cursor.description]
     data = [dict(zip(column_names, row)) for row in cursor.fetchall()]

@@ -47,7 +47,8 @@ class EventForm(forms.Form):
     date = forms.CharField(label='Date and Time (ex. 2022-11-18 12:12:00)')
     age_limit = forms.CharField(label='Age Limit')
     total_quota = forms.CharField(label='Total Quota')
-
+    price = forms.CharField(label='Price')
+    
     sql = """SELECT VENUE_ID, NAME FROM VENUE"""
     cursor = connection.cursor()
     cursor.execute(sql)

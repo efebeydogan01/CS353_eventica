@@ -1,0 +1,60 @@
+{% extends "../base.html" %}
+{% block content %}
+    <h2 class="text-danger fw-bold">My Events</h2>
+    <br>
+    <form action='/home' method='GET' class="d-flex gx-2">
+        <input class="form-control me-2" type="text submit" name="title" placeholder="Title">
+        <button class="btn btn-outline-secondary dropdown-toggle me-2" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">Type
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <button type='submit' class="dropdown-item" name="event_type" value="Concert">Concert</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="event_type" value="Sports">Sports</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="event_type" value="Gathering">Gathering</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="event_type" value="Art">Art</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="event_type" value="Other">Other</button>
+            </li>
+        </ul>
+        <button type='submit' class="btn btn-secondary">Search</button>
+    </form>
+    <div class="p-2 text-muted text-sm">
+        {% if filter_event_type or filter_title %}
+            Showing {{ filter_event_type }} events {% if filter_title %}that contain "{{ filter_title }}"{% endif %}
+        {% endif %}
+    </div>
+
+    <div class="list-group">
+        {% for event in events %}
+            <a class="list-group-item list-group-item-action p-4">
+                <div class="d-flex w-100 justify-content-between">
+                    <div>
+                        <h6>{{ event.event_type }}</h6>
+                        <h4 class="text-danger">{{ event.name }}</h4>
+                        <p class="mb-0">Description: {{ event.description }}</p>
+                        <small class="text-muted">Location: {{ event.venue }}</small> <br>
+                        <small>Age limit: {% if event.age_limit %}{{ event.age_limit }}+{% else %}-{% endif %}</small>
+                        <br>
+                        <small>Remaining quota: {{ event.remaining_quota }} / {{ event.total_quota }}</small>
+                    </div>
+                    <div class="text-end">
+                        <h6>{{ event.date }}</h6> <br>
+                        <form action='/edit-event' method='POST'>
+                            {% csrf_token %}
+                            <input type='hidden' name="event" value="{{ event.event_id }}"/>
+                            <button type='submit' class="btn btn-success">Edit Event</button>
+                        </form>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

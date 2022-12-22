@@ -8,4 +8,6 @@ urlpatterns = [
     path('home', views.home, name="home"),
     path('signup', SignupView.as_view(), name="signup"),
     path('create-event', views.create_event, name="create_event"),
+    path('my-events', views.my_events, name="my_events"),
+    path('edit-event', views.edit_event, name="edit_event")
 ]
