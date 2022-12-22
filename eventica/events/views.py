@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 import calendar
 from calendar import HTMLCalendar
-from datetime import datetime
+from datetime import datetime, date
 from django.db import connection
 from events.forms import *
 from django.views import View
@@ -12,7 +12,7 @@ from django.contrib import messages
 def home(request):
     cursor = connection.cursor()
     cursor.execute("""
-                    SELECT event_id, E.name name, date, event_type, V.name venue
+                    SELECT event_id, E.name name, date, event_type, remaining_quota, V.name venue
                     FROM event E JOIN venue V USING (venue_id) 
                     WHERE E.name LIKE '%%' AND event_type="Concert" AND 
                     city="Ankara";
@@ -24,13 +24,29 @@ def home(request):
     if request.method == "POST":
         event_id = request.POST["event"]
         user_id = request.session['user_id']
-        try:
-            cursor.execute(f"""
-                            INSERT INTO joins values({event_id}, {user_id})
-                            """)
-        except:
-            messages.info(request, 'You have already joined the event', extra_tags="text-danger")
-        # INSERT INTO joins VALUES (@event_id, @user_id);
+        cursor.execute(f"""
+                        SELECT age_limit, remaining_quota
+                        FROM event E
+                        where E.event_id = {event_id}
+                        """)
+        event_info = cursor.fetchall()
+        age_limit = event_info[0][0]
+        remaining_quota = event_info[0][1]
+        birthdate = datetime. strptime(request.session['date_of_birth'], "%Y-%m-%d")
+        today = date.today()
+        age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+
+        if remaining_quota <= 0:
+            messages.error(request, 'There is not enough quota left in the event!', extra_tags="text-danger")
+        elif age < age_limit:
+            messages.error(request, 'You are not old enough to attend this event!', extra_tags="text-danger")
+        else:
+            try:
+                cursor.execute(f"""
+                                INSERT INTO joins values({event_id}, {user_id})
+                                """)
+            except:
+                messages.error(request, 'You have already joined the event', extra_tags="text-danger")
 
     return render(request, "events/events.html", {
         "city": request.session['city'].upper(),

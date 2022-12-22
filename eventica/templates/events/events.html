@@ -12,7 +12,6 @@
             <li><a class="dropdown-item" href="#">Concert</a></li>
             <li><a class="dropdown-item" href="#">Another action</a></li>
             <li><a class="dropdown-item" href="#">Something else here</a></li>
-            <li><a class="dropdown-item" href="#">{{ name }}</a></li>
         </ul>
     </div>
     <br>
@@ -24,7 +23,8 @@
                     <small>{{ event.date }}</small>
                 </div>
                 <p class="mb-1">{{ event.name }}</p>
-                <small class="text-muted">{{ event.venue }}</small>
+                <small class="text-muted">{{ event.venue }}</small> <br>
+                <small>Remaining quota: {{ event.remaining_quota }}</small>
                 <form action='/home' method='POST'>
                     {% csrf_token %}
                     <input type='hidden' name="event" value="{{ event.event_id }}"/>
