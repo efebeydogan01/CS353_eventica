@@ -64,27 +64,29 @@ try:
                             phone_number varchar(15),
                             date_of_birth date,
                             balance int,
+                            role varchar(10),
+                            CHECK (role in ('admin', 'user')),
                             PRIMARY KEY (user_id)) ENGINE=INNODB;""")
     print("user table created successfully ") 
 
     result = cursor.execute("""
                             insert into user values(
-                                NULL, "Efe Beydogan", "password", "efebeydogan@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500
+                                NULL, "Efe Beydogan", "password", "efebeydogan@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500, "admin"
                             );
                             """)
     result = cursor.execute("""
                             insert into user values(
-                                NULL, "Eren Polat", "1", "erenpolat@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2008","%m-%d-%Y"), 500
+                                NULL, "Eren Polat", "1", "erenpolat@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2008","%m-%d-%Y"), 500, "user"
                             );
                             """)
     result = cursor.execute("""
                             insert into user values(
-                                NULL, "Berk Türkçapar", "1", "berk@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500
+                                NULL, "Berk Türkçapar", "1", "berk@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500, "user"
                             );
                             """)
     result = cursor.execute("""
                             insert into user values(
-                                NULL, "Emir M. Erdem", "1", "emir@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500
+                                NULL, "Emir M. Erdem", "1", "emir@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500, "user"
                             );
                             """)
 
@@ -221,19 +223,19 @@ try:
 
     result = cursor.execute("""
                             insert into event values(
-                                NULL, "Yalın Concert", "Yalın Şehrinize Geliyor!", "2023-06-25 20:30:00", "Concert", "Available", 18,
+                                NULL, "Yalın Concert", "Yalın Şehrinize Geliyor!", "2022-06-25 20:30:00", "Concert", "Available", 18,
                                 150, 150, "A, B, C", 1, 1, 0, 100
                             );
                             """)
     result = cursor.execute("""
                             insert into event values(
-                                NULL, "MVÖ", "mor ve ötesi", "2023-06-25 20:30:00", "Concert", "Available", 18,
+                                NULL, "MVÖ", "mor ve ötesi", "2022-06-25 20:30:00", "Concert", "Available", 18,
                                 150, 150, "A, B, C", 1, 1, 0, 100
                             );
                             """)
     result = cursor.execute("""
                             insert into event values(
-                                NULL, "JABBAR", "cesaretsizce olmuyor", "2023-07-28 12:30:00", "Concert", "Available", 13,
+                                NULL, "JABBAR", "cesaretsizce olmuyor", "2022-07-28 12:30:00", "Concert", "Available", 13,
                                 150, 150, "A, B, C", 1, 1, 0, 0
                             );
                             """)

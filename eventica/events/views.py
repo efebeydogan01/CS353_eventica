@@ -67,7 +67,7 @@ def home(request):
                     WHERE city = %s AND E.name LIKE %s AND event_type LIKE %s;
                     """, [city, q_search_title, q_event_type])
     events = to_dict(cursor)
-
+    role = request.session['role']
     return render(request, "events/events.html", {
         "city": city.upper(),
         "name": user_name,
@@ -76,6 +76,7 @@ def home(request):
         "filter_title": search_title,
         "date_form": DateForm(),
         "events": events,
+        "role": role,
     })
 
 def create_event(request):
@@ -149,6 +150,11 @@ class LoginView(View):
             desc = desc[0]
             date_of_birth = desc[0]
             request.session['date_of_birth'] = str(date_of_birth)
+            cursor2.execute('select role from user where user_id=\'' + str(user_id) + '\'')
+            desc = cursor2.fetchall()
+            desc = desc[0]
+            role = desc[0]
+            request.session['role'] = str(role)
             return redirect('home')
     def get(self, request):
         form = LoginForm()
@@ -220,7 +226,7 @@ def edit_event(request):
     
     
     
-def my_events (request):
+def my_events(request):
     city = request.session['city'].lower()
     user_name = request.session['name']
     date_of_birth = request.session['date_of_birth']
@@ -277,6 +283,48 @@ def my_events (request):
         "filter_title": search_title,
         "events": events,
     })
+
+def reports(request):
+    cursor =  connection.cursor()
+    cursor.execute("""
+                    SELECT event_type, count(*) as cnt
+                    FROM event natural join joins
+                    GROUP BY event_type
+                    ORDER BY cnt desc
+                    """)
+    events = to_dict(cursor)
+    this_year = datetime.date.today().year
+
+    cursor.execute(f"""
+                    SELECT E.name as name, E.event_type, E.description, V.name as venue, E.date, (select count(*) from event E2 natural join joins where E2.event_id = E.event_id) as cnt
+                    FROM (venue V join event E using(venue_id)) natural join joins
+                    WHERE YEAR(date) = {this_year}
+                    GROUP BY event_id
+                    HAVING count(*) >= all (SELECT count(*)
+                                        FROM (venue join event using(venue_id)) natural join joins
+                                        WHERE YEAR(date) = {this_year}
+                                        GROUP BY event_id)
+                    """)
+    most_attended = to_dict(cursor)
+    
+    cursor.execute(f"""
+                SELECT E.name as name, E.event_type, E.description, V.name as venue, E.date, (select count(*) from event E2 natural join joins where E2.event_id = E.event_id) as cnt
+                FROM (venue V join event E using(venue_id)) natural join joins
+                WHERE YEAR(date) = {this_year}
+                GROUP BY event_id
+                HAVING count(*) <= all (SELECT count(*)
+                                    FROM (venue join event using(venue_id)) natural join joins
+                                    WHERE YEAR(date) = {this_year}
+                                    GROUP BY event_id)
+                """)
+    least_attended = to_dict(cursor)
+    return render(request, 'reports.html', {
+        "events": events,
+        "this_year": this_year,
+        "most_attended": most_attended,
+        "least_attended": least_attended,
+    })
+
 
 def to_dict(cursor):
     column_names = [c[0] for c in cursor.description]
