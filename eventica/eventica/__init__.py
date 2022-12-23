@@ -574,6 +574,5 @@ try:
                             end;
                             """)
 
-    
 except Error as e:
     print("Error while connecting to MySQL", e)

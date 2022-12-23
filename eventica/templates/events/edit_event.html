@@ -2,11 +2,11 @@
 {% block content %}
     <h2 class="text-danger fw-bold">Edit Event {{ event_name}}</h2>
     <br><br>
-        <form action="/edit-event" method=POST>
+        <form action="/my-events" method=POST>
             {% csrf_token %}
             {{  form.as_p }}
             <br>
-            <input type='hidden' name="event" value="{{ event.event_id }}"/>
+            <input type='hidden' name="event" value="{{ event_id }}"/>
             <button type="submit" class = "btn btn-secondary">
                 Submit
             </button>

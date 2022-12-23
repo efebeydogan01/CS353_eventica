@@ -7,6 +7,7 @@ from events.forms import *
 from django.views import View
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.urls import reverse
 
 def home(request):
     city = request.session['city'].lower()
@@ -188,48 +189,34 @@ class SignupView(View):
         
 
 def edit_event(request):
-    if request.method=="POST":
-        context={}
-        context['form'] = EventForm(request.POST)
-        event_id = request.POST["event"]
-        if context['form'].is_valid():
-            name = str(context['form'].cleaned_data['name'])
-            description = str(context['form'].cleaned_data['description'])
-            event_type = context['form'].cleaned_data['event_type']
-            date = str(context['form'].cleaned_data['date'])
-            age_limit = int(context['form'].cleaned_data['age_limit'])
-            total_quota = int(context['form'].cleaned_data['total_quota'])
-            venue = context['form'].cleaned_data['venue']
-            user_id = int(request.session['user_id'])
-            cursor.execute(f"""
-                update event SET name = %s, description = %s, date = %s, event_type %s, 
-                age_limit = {age_limit}, total_quota = {total_quota}, price = {price},
-                venue_id = {venue[0]} where event_id = {event_id});
-                """, [name, description, date, event_type])
-            messages.success(request, 'Successfully edited the event!', extra_tags='bg-success')
-            context['form'] = EventForm()
-        else:
-            cursor = connection.cursor()
-            cursor.execute(f"""
-                                SELECT *
-                                FROM event E
-                                WHERE E.event_id = {event_id}
-                                """)
-            event = to_dict(cursor)
-            print(event)
-            name = event[0]['name']
-            description = event[0]['description']
-            event_type =  event[0]['event_type']
-            date =  event[0]['date']
-            age_limit =  event[0]['age_limit']
-            total_quota =  event[0]['total_quota']
-            venue =  event[0]['venue_id']
-            price = event[0]['price']
-            context['form'] = EventForm(initial={'name':name, 'description':description, 'event_type':event_type, 'date':date, 'age_limit':age_limit,  
-                                                                            'total_quota':total_quota, 'venue_id':venue, 'price':price})
-            if 'submitted' in request.GET:
-                submitted = True 
-    return render(request, 'events/edit_event.html', context)
+    context={}
+    context['form'] = EventForm(request.POST)
+    event_id = request.POST["event"]
+    cursor = connection.cursor()
+    cursor.execute(f"""
+                        SELECT *
+                        FROM event E
+                        WHERE E.event_id = {event_id}
+                        """)
+    event = to_dict(cursor)
+    print(event)
+    name = event[0]['name']
+    description = event[0]['description']
+    event_type =  event[0]['event_type']
+    date =  event[0]['date']
+    age_limit =  event[0]['age_limit']
+    total_quota =  event[0]['total_quota']
+    venue =  event[0]['venue_id']
+    price = event[0]['price']
+    context['form'] = EventForm(initial={'name':name, 'description':description, 'event_type':event_type, 'date':date, 'age_limit':age_limit,  
+                                                                    'total_quota':total_quota, 'venue_id':venue, 'price':price})
+    if 'submitted' in request.GET:
+        submitted = True 
+    return render(request, 'events/edit_event.html', {
+        "event_name": name,
+        "event_id": event_id,
+        "form": context['form']
+    })
     
     
     
@@ -248,6 +235,39 @@ def my_events (request):
                     WHERE creator_id = {user_id}
                     """)
     events = to_dict(cursor)
+
+    if request.method == "POST": # edit event
+        context={}
+        context['form'] = EventForm(request.POST)
+        event_id = request.POST["event"]
+        if context['form'].is_valid():
+            name = str(context['form'].cleaned_data['name'])
+            description = str(context['form'].cleaned_data['description'])
+            event_type = context['form'].cleaned_data['event_type']
+            date = str(context['form'].cleaned_data['date'])
+            age_limit = int(context['form'].cleaned_data['age_limit'])
+            total_quota = int(context['form'].cleaned_data['total_quota'])
+            venue = context['form'].cleaned_data['venue']
+            venue_id = int(venue[0])
+            price = int(context['form'].cleaned_data['price'])
+            user_id = int(request.session['user_id'])
+            cursor.execute(f"""
+                            SELECT count(*)
+                            FROM joins
+                            WHERE event_id = {event_id}
+                            """)
+            number_of_joined = int(cursor.fetchall()[0][0])
+            remaining_quota = total_quota - number_of_joined
+            cursor.execute(f"""
+                            UPDATE event 
+                            SET name = '{name}', description = '{description}', date = '{date}', event_type = '{event_type}', 
+                            age_limit = {age_limit}, total_quota = {total_quota}, remaining_quota = {remaining_quota},  price = {price},
+                            venue_id = {venue_id} 
+                            WHERE event_id = {event_id}
+                            """)
+            messages.success(request, 'Successfully edited the event!', extra_tags='bg-success')
+            context['form'] = EventForm()
+            return redirect(reverse("my_events"))
 
     return render(request, "events/my_events.html", {
         "city": city.upper(),
