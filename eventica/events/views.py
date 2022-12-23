@@ -183,13 +183,11 @@ class SignupView(View):
         return render(request, 'signup.html', context)
 
 def edit_event(request):
-    event_id = 2
-    
-    context={}
-    context['form'] = EventForm()
     if request.method=="POST":
+        context={}
+        context['form'] = EventForm(request.POST)
+        event_id = request.POST["event"]
         if context['form'].is_valid():
-            print("IF E GIRDI")
             name = str(context['form'].cleaned_data['name'])
             description = str(context['form'].cleaned_data['description'])
             event_type = context['form'].cleaned_data['event_type']
@@ -206,15 +204,14 @@ def edit_event(request):
             messages.success(request, 'Successfully edited the event!', extra_tags='bg-success')
             context['form'] = EventForm()
         else:
-            print("BURDA")
-            event_id = request.POST["event"]
             cursor = connection.cursor()
-            cursor.execute("""
+            cursor.execute(f"""
                                 SELECT *
                                 FROM event E
-                                WHERE E.event_id = %d
-                                """,[int(event_id)])
+                                WHERE E.event_id = {event_id}
+                                """)
             event = to_dict(cursor)
+            print(event)
             name = event[0]['name']
             description = event[0]['description']
             event_type =  event[0]['event_type']
