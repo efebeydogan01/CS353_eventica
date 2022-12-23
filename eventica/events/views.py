@@ -78,7 +78,6 @@ def home(request):
     })
 
 def create_event(request):
-    
     if request.method=="POST":
         context={}
         context['form'] = EventForm(request.POST)
@@ -155,6 +154,11 @@ class LoginView(View):
         context = {'form': form}
         return render(request, 'login.html', context)
 
+class LogoutView(View):
+    def post(self, request):
+        request.session.flush()
+        return redirect('login')
+
 class SignupView(View):
     def post(self, request):
         form = SignupForm(request.POST)
@@ -181,6 +185,7 @@ class SignupView(View):
         form = SignupForm()
         context = {'form': form}
         return render(request, 'signup.html', context)
+        
 
 def edit_event(request):
     if request.method=="POST":
