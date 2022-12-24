@@ -63,7 +63,7 @@ try:
                             city varchar(30),
                             phone_number varchar(15),
                             date_of_birth date,
-                            balance int,
+                            balance int default 0, 
                             role varchar(10),
                             CHECK (role in ('admin', 'user')),
                             PRIMARY KEY (user_id)) ENGINE=INNODB;""")

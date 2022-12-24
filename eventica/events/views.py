@@ -220,9 +220,9 @@ class SignupView(View):
             cursor = connection.cursor()
             sql = """
                         INSERT INTO `user` 
-                        (`name`, `email`, `password`, `phone_number`, `city`, `address`, `date_of_birth`) 
-                        VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}');
-                    """.format(name, email, password, phone_number, city, address, date_of_birth)
+                        (`name`, `email`, `password`, `phone_number`, `city`, `address`, `date_of_birth`, `role`) 
+                        VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');
+                    """.format(name, email, password, phone_number, city, address, date_of_birth, "user")
             cursor.execute(sql)
         # request.session['user_type'] = 'customer'
         form = LoginForm()
