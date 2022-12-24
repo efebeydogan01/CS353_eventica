@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2 class="text-danger fw-bold">Events of {{ selected_artist }}</h2>
+    <br>
+    <div class="list-group">
+        {% for event in events %}
+            <a class="list-group-item list-group-item-action p-4">
+                <div class="d-flex w-100 justify-content-between">
+                    <div>
+                        <h6>{{ event.event_type }}</h6>
+                        <h4 class="text-danger">{{ event.name }}</h4>
+                        <p class="mb-0">Description: {{ event.description }}</p>
+                        <small class="text-muted">Location: {{ event.venue }}</small> <br>
+                        <small>Age limit: {% if event.age_limit %}{{ event.age_limit }}+{% else %}-{% endif %}</small>
+                        <br>
+                        <small>Remaining quota: {{ event.remaining_quota }} / {{ event.total_quota }}</small>
+                    </div>
+                    <div class="text-end">
+                        <h6>{{ event.date }}</h6> <br>
+                        <small>{% if event.price > 0 %}Price: {{ event.price }} TL {% else %} Free {% endif %}</small>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

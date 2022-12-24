@@ -229,7 +229,13 @@ try:
                             """)
     result = cursor.execute("""
                             insert into event values(
-                                NULL, "MVÖ", "mor ve ötesi", "2022-06-25 20:30:00", "Concert", "Available", 18,
+                                NULL, "Yalın Yılbaşı Konseri", "Yalın Şehrinize Geliyor!", "2022-12-31 20:30:00", "Concert", "Available", 18,
+                                150, 150, "A, B, C", 1, 1, 0, 100
+                            );
+                            """)
+    result = cursor.execute("""
+                            insert into event values(
+                                NULL, "Mor ve Ötesi Odeon'da", "mor ve ötesi", "2022-06-25 20:30:00", "Concert", "Available", 18,
                                 150, 150, "A, B, C", 1, 1, 0, 100
                             );
                             """)

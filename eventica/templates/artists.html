@@ -46,10 +46,9 @@
                         <small>Followers: {{ artist.follower_count }}</small>
                     </div>
                     <div class="text-end">
-                        <form action='/artists' method='POST'>
-                            {% csrf_token %}
-                            <input type='hidden' name="event" value="{{ artist.artist_id }}"/>
-                            <button type='submit' class="btn btn-success">See Details</button>
+                        <form action='/artistPage' method='GET'>
+                            <input type='hidden' name="artist" value="{{ artist.name }}"/>
+                            <button type='submit' class="btn btn-success">See Events</button>
                         </form>
                     </div>
                 </div>

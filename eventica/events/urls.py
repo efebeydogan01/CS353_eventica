@@ -13,4 +13,5 @@ urlpatterns = [
     path('edit-event', views.edit_event, name="edit_event"),
     path('reports', views.reports, name="reports"),
     path('artists', views.artists, name="artists"),
+    path('artistPage', views.artistPage, name="artistPage"),
 ]

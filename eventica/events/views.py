@@ -100,6 +100,25 @@ def artists(request):
         "role": role,
     })
 
+def artistPage(request):
+    city = request.session['city'].lower()
+    cursor = connection.cursor()
+    selected_artist = request.GET["artist"] if "artist" in request.GET and request.GET["artist"] else ''
+
+    q_search_name = "%" + selected_artist + "%"
+    cursor.execute("""
+                    SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, price, V.name venue
+                    FROM event E JOIN venue V USING (venue_id) 
+                    WHERE city = %s AND E.name LIKE %s;
+                    """, [city, q_search_name])
+    events = to_dict(cursor)
+    role = request.session['role']
+    return render(request, "artistPage.html", {
+        "selected_artist": selected_artist,
+        "events": events,
+        "role": role,
+    })
+
 def create_event(request):
     if request.method=="POST":
         context={}
