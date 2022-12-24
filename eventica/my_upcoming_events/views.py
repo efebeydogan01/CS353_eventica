@@ -39,6 +39,15 @@ def my_upcoming_events(request):
             return redirect(reverse("my_upcoming_events"))
         
         elif request.POST["action"] == 'Pay':
+            cursor.execute(f"""
+                            SELECT balance
+                            FROM user
+                            WHERE user_id = {user_id}
+                            """)
+            balance = int(cursor.fetchall()[0][0])
+            if balance <= 0:
+                messages.success(request, 'You have insufficient funds to pay for this ticket, please add enough balance to your account!', extra_tags='bg-danger')
+                return redirect(reverse("my_upcoming_events"))
             price = request.POST["event"]
             event_id = request.POST["event_id"]
             cursor.execute(f"""
