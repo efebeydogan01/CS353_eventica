@@ -79,6 +79,27 @@ def home(request):
         "role": role,
     })
 
+def artists(request):
+    cursor = connection.cursor()
+    search_name = request.GET["name"] if "name" in request.GET and request.GET["name"] else ''
+    filter_genre = request.GET["genre"] if "genre" in request.GET and request.GET["genre"] else ''
+
+    q_search_name = "%" + search_name + "%"
+    q_genre = "%" + filter_genre + "%"
+    cursor.execute("""
+                    SELECT artist_id, name, description, genre, follower_count
+                    FROM artist
+                    WHERE name LIKE %s AND genre LIKE %s;
+                    """, [q_search_name, q_genre])
+    artists = to_dict(cursor)
+    role = request.session['role']
+    return render(request, "artists.html", {
+        "filter_genre": filter_genre,
+        "filter_name": search_name,
+        "artists": artists,
+        "role": role,
+    })
+
 def create_event(request):
     if request.method=="POST":
         context={}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2 class="text-danger fw-bold">ARTISTS</h2>
+    <br>
+    <form action='/artists' method='GET' class="d-flex gx-2">
+        <input class="form-control me-2" type="text submit" name="name" placeholder="Name">
+        <button class="btn btn-outline-secondary dropdown-toggle me-2" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">Type
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <button type='submit' class="dropdown-item" name="genre" value="">All</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="genre" value="Pop">Pop</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="genre" value="Rock">Rock</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="genre" value="Rap">Rap</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="genre" value="Techno">Techno</button>
+            </li>
+            <li>
+                <button type='submit' class="dropdown-item" name="genre" value="Country">Country</button>
+            </li>
+        </ul>
+        <button type='submit' class="btn btn-secondary">Search</button>
+    </form>
+    <div class="p-2 text-muted text-sm">
+        {% if filter_genre or filter_name %}
+            Showing {{ filter_genre }} artists {% if filter_name %} that contain "{{ filter_name }}"{% endif %}
+        {% endif %}
+    </div>
+
+    <div class="list-group">
+        {% for artist in artists %}
+            <a class="list-group-item list-group-item-action p-4">
+                <div class="d-flex w-100 justify-content-between">
+                    <div>
+                        <h6>{{ artist.genre }}</h6>
+                        <h4 class="text-danger">{{ artist.name }}</h4>
+                        <p class="mb-0">Description: {{ artist.description }}</p>
+                        <small>Followers: {{ artist.follower_count }}</small>
+                    </div>
+                    <div class="text-end">
+                        <form action='/artists' method='POST'>
+                            {% csrf_token %}
+                            <input type='hidden' name="event" value="{{ artist.artist_id }}"/>
+                            <button type='submit' class="btn btn-success">See Details</button>
+                        </form>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

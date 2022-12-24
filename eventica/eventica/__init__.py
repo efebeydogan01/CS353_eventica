@@ -81,7 +81,7 @@ try:
                             """)
     result = cursor.execute("""
                             insert into user values(
-                                NULL, "Berk Türkçapar", "1", "berk@hotmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500, "user"
+                                NULL, "Berk Türkçapar", "1", "berk@gmail.com", "ankara", "ankara", "0555", STR_TO_DATE("03-26-2001","%m-%d-%Y"), 500, "user"
                             );
                             """)
     result = cursor.execute("""
@@ -377,6 +377,68 @@ try:
                             ) ENGINE=INNODB;
                             """)
     print("artist table created successfully")
+
+    result = cursor.execute("""
+                            insert into artist values(
+                                NULL,
+                                "Yalın", 
+                                "Zalim, oyunu bozan, sen de bu büyü de yalan...", 
+                                NULL, 
+                                "Pop", 
+                                0
+                            );
+                            """)
+    result = cursor.execute("""
+                            insert into artist values(
+                                NULL,
+                                "Duman", 
+                                "Duman is an amazing group!", 
+                                NULL, 
+                                "Rock", 
+                                0
+                            );
+                            """)
+    result = cursor.execute("""
+                            insert into artist values(
+                                NULL,
+                                "Kenan Doğulu", 
+                                "Kenan is an amazing group!", 
+                                NULL, 
+                                "Pop", 
+                                0
+                            );
+                            """)
+    result = cursor.execute("""
+                            insert into artist values(
+                                NULL,
+                                "Mor ve Ötesi", 
+                                "MVÖ is an amazing group!", 
+                                NULL, 
+                                "Rock", 
+                                0
+                            );
+                            """)
+    result = cursor.execute("""
+                            insert into artist values(
+                                NULL,
+                                "Ezhel", 
+                                "Ezhel is an amazing group!", 
+                                NULL, 
+                                "Rap", 
+                                0
+                            );
+                            """)
+    result = cursor.execute("""
+                            insert into artist values(
+                                NULL,
+                                "Killa Hakan", 
+                                "Killa is an amazing group!", 
+                                NULL, 
+                                "Rap", 
+                                0
+                            );
+                            """)
+    print("successfully inserted values")
 
     result = cursor.execute("""
                             create table performs(

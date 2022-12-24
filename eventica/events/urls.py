@@ -12,4 +12,5 @@ urlpatterns = [
     path('my-events', views.my_events, name="my_events"),
     path('edit-event', views.edit_event, name="edit_event"),
     path('reports', views.reports, name="reports"),
+    path('artists', views.artists, name="artists"),
 ]
