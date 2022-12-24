@@ -25,7 +25,6 @@ try:
     result = cursor.execute("DROP TABLE IF EXISTS tags_event")
     result = cursor.execute("DROP TABLE IF EXISTS follows")
     result = cursor.execute("DROP TABLE IF EXISTS blog")
-    result = cursor.execute("DROP TABLE IF EXISTS team")
     result = cursor.execute("DROP TABLE IF EXISTS competes")
     result = cursor.execute("DROP TABLE IF EXISTS performs")
     result = cursor.execute("DROP TABLE IF EXISTS game")
@@ -44,6 +43,7 @@ try:
     result = cursor.execute("DROP TABLE IF EXISTS blog")
     result = cursor.execute("DROP TABLE IF EXISTS ticket")
     result = cursor.execute("DROP TABLE IF EXISTS event")
+    result = cursor.execute("DROP TABLE IF EXISTS team")
     result = cursor.execute("DROP TABLE IF EXISTS user")
     result = cursor.execute("DROP TABLE IF EXISTS venue")
     result = cursor.execute("DROP TABLE IF EXISTS artist")
@@ -460,19 +460,6 @@ try:
     print("performs table created successfully")
 
     result = cursor.execute("""
-                            create table competes(
-                            team_id int not null,
-                            event_id int not null,
-                            FOREIGN KEY (team_id) REFERENCES event(event_id)
-                            ON DELETE CASCADE,
-                            FOREIGN KEY (event_id) REFERENCES event(event_id)
-                            ON DELETE CASCADE,
-                            PRIMARY KEY (team_id, event_id)
-                            ) ENGINE=INNODB;
-                            """)
-    print("competes table created successfully")
-
-    result = cursor.execute("""
                             create table team(
                             team_id int not null auto_increment,
                             name varchar(50) not null,
@@ -482,6 +469,19 @@ try:
                             ) ENGINE=INNODB;
                             """)
     print("team table created successfully")
+
+    result = cursor.execute("""
+                            create table competes(
+                            team_id int not null,
+                            event_id int not null,
+                            FOREIGN KEY (team_id) REFERENCES team(team_id)
+                            ON DELETE CASCADE,
+                            FOREIGN KEY (event_id) REFERENCES event(event_id)
+                            ON DELETE CASCADE,
+                            PRIMARY KEY (team_id, event_id)
+                            ) ENGINE=INNODB;
+                            """)
+    print("competes table created successfully")
 
     result = cursor.execute("""
                             create table follows(
