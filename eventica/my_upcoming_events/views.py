@@ -60,7 +60,21 @@ def my_upcoming_events(request):
                             """)
             messages.success(request, 'You have successfully paid for your ticket and the event fee has been deducted from your balance!', extra_tags='bg-success')
             return redirect(reverse("my_upcoming_events"))
-
+        elif request.POST["action"] == 'AddFunds':
+            amount = request.POST["amount"]
+            cursor.execute(f"""
+                            UPDATE user
+                            SET balance = balance + {amount}
+                            WHERE user_id = {user_id}
+                            """)
+            messages.success(request, 'You have successfully added funds to your balance!', extra_tags='bg-success')
+            return redirect(reverse("my_upcoming_events"))
+    cursor.execute(f"""
+                            SELECT balance
+                            FROM user
+                            WHERE user_id = {user_id}
+                            """)
+    balance = int(cursor.fetchall()[0][0])
     search_title = request.GET["title"] if "title" in request.GET and request.GET["title"] else ''
     event_type = request.GET["event_type"] if "event_type" in request.GET and request.GET["event_type"] else ''
     q_search_title = "%" + search_title + "%"
@@ -77,6 +91,7 @@ def my_upcoming_events(request):
         "filter_title": search_title,
         "events": events,
         "paid_events": paid_events,
+        "balance": balance
     })
 
 def to_dict(cursor):

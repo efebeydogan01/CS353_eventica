@@ -2,7 +2,19 @@
 {% block content %}
     <h2 class="text-danger fw-bold">MY UPCOMING EVENTS</h2>
     <br>
-    <input class="form-control" type="text" placeholder="Title">
+    <div class="row align-items-center">
+        <div class="col-9">
+            <input class="form-control" type="text" placeholder="Title">
+        </div>
+        <div class="col text-end">
+            Current Balance: {{ balance }} ₺
+        </div>
+        <div class="col text-end">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Add Funds
+            </button>
+        </div>
+    </div>
     <br>
     <div class="list-group">
         {% for event in events %}
@@ -40,5 +52,24 @@
                 </div>
             </a>
         {% endfor %}
+    </div>
+
+    <!-- Add Money Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action='/my-upcoming-events' method='POST' class="d-flex gx-2">
+                    {% csrf_token %}
+                    <input class="form-control me-2" type="number" name="amount" placeholder="Enter Amount">
+                    <button type='submit' class="btn btn-success" name="action" value="AddFunds">Add</button>
+                </form>
+            </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
