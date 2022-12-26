@@ -56,16 +56,19 @@ def home(request):
                 messages.error(request, 'You have already joined the event', extra_tags="bg-danger")
         return redirect(request.META['HTTP_REFERER'])
 
+    start_date = request.GET["start_date"] if "start_date" in request.GET and request.GET["start_date"] else datetime.date.min
+    end_date = request.GET["end_date"] if "end_date" in request.GET and request.GET["end_date"] else datetime.date.max
+    print('date')
     search_title = request.GET["title"] if "title" in request.GET and request.GET["title"] else ''
     event_type = request.GET["event_type"] if "event_type" in request.GET and request.GET["event_type"] else ''
 
     q_search_title = "%" + search_title + "%"
     q_event_type = "%" + event_type + "%"
-    cursor.execute("""
+    cursor.execute(f"""
                     SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, price, V.name venue
                     FROM event E JOIN venue V USING (venue_id) 
-                    WHERE city = %s AND E.name LIKE %s AND event_type LIKE %s;
-                    """, [city, q_search_title, q_event_type])
+                    WHERE city = %s AND E.name LIKE %s AND event_type LIKE %s AND DATE(date) BETWEEN %s AND %s;
+                    """, [city, q_search_title, q_event_type, start_date, end_date])
     events = to_dict(cursor)
     role = request.session['role']
     return render(request, "events/events.html", {
