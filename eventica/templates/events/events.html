@@ -1,7 +1,7 @@
 {% extends "../base.html" %}
 {% block content %}
     {% if role == 'admin' %}
-    <a class="btn btn-outline-danger" style="float: right;" href="reports">Admin Reports</a>
+        <a class="btn btn-outline-danger" style="float: right;" href="reports">Admin Reports</a>
     {% endif %}
     <h2 class="text-danger fw-bold">NEARBY EVENTS IN {{ city }}</h2>
     <div class="text-muted">Welcome back {{ name }}</div>
@@ -58,7 +58,11 @@
                         <form action='/home' method='POST'>
                             {% csrf_token %}
                             <input type='hidden' name="event" value="{{ event.event_id }}"/>
-                            <button type='submit' class="btn btn-success">Join Event</button>
+                            {% if event.upcoming %}
+                                <button type='submit' class="btn btn-success">Join Event</button>
+                            {% else %}
+                                <small>Past event</small>
+                            {% endif %}
                         </form>
                         <small>{% if event.price > 0 %}Price: {{ event.price }} TL {% else %} Free {% endif %}</small>
                     </div>

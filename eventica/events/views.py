@@ -70,6 +70,8 @@ def home(request):
                     WHERE city = %s AND E.name LIKE %s AND event_type LIKE %s AND DATE(date) BETWEEN %s AND %s;
                     """, [city, q_search_title, q_event_type, start_date, end_date])
     events = to_dict(cursor)
+    for event in events:
+        event["upcoming"] = (event["date"] >= datetime.datetime.now())
     role = request.session['role']
     return render(request, "events/events.html", {
         "city": city.upper(),
