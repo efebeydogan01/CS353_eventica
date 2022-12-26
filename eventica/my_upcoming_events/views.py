@@ -82,7 +82,7 @@ def my_upcoming_events(request):
     cursor.execute(f"""
                     SELECT event_id, E.name name, date, event_type, remaining_quota, total_quota, age_limit, E.description, V.name venue, V.city city, price
                     FROM joins J natural join event E JOIN venue V USING (venue_id) 
-                    WHERE J.user_id = {user_id} AND E.name LIKE %s AND event_type LIKE %s;
+                    WHERE J.user_id = {user_id} AND E.name LIKE %s AND event_type LIKE %s AND DATE(date) >= CURDATE();
                     """, [q_search_title, q_event_type])
     events = to_dict(cursor)
     return render(request, "my_upcoming_events.html", {
